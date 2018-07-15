@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PhotoManager</string>
+    <string name="album">相册</string>
+    <string name="other">其他</string>
+    <string name="collect">收藏</string>
+    <string name="secret">私密</string>
+    <string name="photograph">相机</string>
+</resources>
