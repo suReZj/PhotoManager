@@ -5,4 +5,5 @@
     <string name="collect">收藏</string>
     <string name="secret">私密</string>
     <string name="photograph">相机</string>
+    <string name="inputPassword">输入密码</string>
 </resources>
