@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.example.sure.photomanager.R;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private FragmentAdapter mFragmentAdapter;
     private List<String> mTitleList = new ArrayList<>();
     private final int REQUEST_CAMERA_PERMISSION = 0;
-    private List<Photo> mPhotoList = new ArrayList<>();
     private HashMap<String, List<Photo>> mAllPhotosTemp;
+    private List<String> mAlbumNameList=new ArrayList<>();
     private Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
     private String mSystemAlbum = "DCIM/Camera";
     private String mSystemPath = null;
@@ -61,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         requestPermission();
-        initView();
-        setListener();
         getData();
     }
 
@@ -76,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout = findViewById(R.id.activity_main_tl);
         mViewPager = findViewById(R.id.activity_main_vp);
 
-        mAlbumFragment = new AlbumFragment();
+        mAlbumFragment = new AlbumFragment(mAllPhotosTemp.get(mSystemPath));
         mFragmentList.add(mAlbumFragment);
-        mOtherFragment = new OtherFragment();
+        mOtherFragment = new OtherFragment(mAlbumNameList,mAllPhotosTemp);
         mFragmentList.add(mOtherFragment);
         mCollectFragment = new CollectFragment();
         mFragmentList.add(mCollectFragment);
@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
                         MediaStore.Images.Media.DATE_MODIFIED + " desc");
 
                 if (mCursor != null) {
+                    ExifInterface exifInterface = null;
                     while (mCursor.moveToNext()) {
                         // 获取图片的路径
                         String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
@@ -166,20 +167,25 @@ public class MainActivity extends AppCompatActivity {
                         String displayName = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
                         // 获取该图片的父路径名
                         String dirPath = new File(path).getParentFile().getAbsolutePath();
-                        int date = mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
-                        Log.e("date",date+"");
 
-
-                        if (dirPath.contains(mSystemAlbum) && mSystemPath != null) {
+                        if (dirPath.contains(mSystemAlbum) && mSystemPath == null) {
                             mSystemPath = dirPath;
                         }
+
+                        try {
+                            exifInterface=new ExifInterface(path);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                         if (mAllPhotosTemp.containsKey(dirPath)) {
                             List<Photo> data = mAllPhotosTemp.get(dirPath);
-                            data.add(new Photo(path, size, displayName, dirPath));
+                            data.add(new Photo(path, size, displayName, dirPath,exifInterface));
                             continue;
                         } else {
+                            mAlbumNameList.add(dirPath);
                             List<Photo> data = new ArrayList<>();
-                            data.add(new Photo(path, size, displayName, dirPath));
+                            data.add(new Photo(path, size, displayName, dirPath,exifInterface));
                             mAllPhotosTemp.put(dirPath, data);
                         }
                     }
@@ -189,7 +195,8 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
+                        initView();
+                        setListener();
                     }
                 });
             }

@@ -1,8 +1,10 @@
 package adapter;
 
 import android.content.Context;
+import android.media.ExifInterface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,24 +13,50 @@ import android.widget.TextView;
 import com.example.sure.photomanager.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
-    private List<String> mTimeList;
-    private Context mContext;
+import bean.Photo;
 
-    static class ViewHolder extends RecyclerView.ViewHolder{
+public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> {
+    private List<String> mTimeList;
+    private HashMap<String, List<Photo>> mMapList;
+    private Context mContext;
+    private List<Photo> mPhotoList;
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mTv;
         private RecyclerView mRv;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            mTv=itemView.findViewById(R.id.album_rv_item_tv);
-            mRv=itemView.findViewById(R.id.album_rv_item_rv);
+            mTv = itemView.findViewById(R.id.album_rv_item_tv);
+            mRv = itemView.findViewById(R.id.album_rv_item_rv);
         }
     }
 
-    public AlbumAdapter(List<String> mTimeList) {
-        this.mTimeList = mTimeList;
+    public AlbumAdapter(List<Photo> mPhotoList) {
+        this.mPhotoList = mPhotoList;
+        mTimeList=new ArrayList<>();
+        mMapList=new HashMap<>();
+
+        String time=null;
+        for (int i = 0; i < mPhotoList.size(); i++) {
+            time=mPhotoList.get(i).getmExifInterface().getAttribute(ExifInterface.TAG_DATETIME);
+            if(time!=null){
+                time=time.substring(0,10);
+            }
+            if(time!=null&&(!getTimeList().contains(time))){
+                List<Photo> list=new ArrayList<>();
+                list.add(mPhotoList.get(i));
+                getTimeList().add(time);
+                this.mMapList.put(time,list);
+                continue;
+            }
+            if(time!=null&&(getTimeList().contains(time))){
+                this.mMapList.get(time).add(mPhotoList.get(i));
+            }
+        }
     }
 
     @Override
@@ -44,10 +72,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTv.setText(mTimeList.get(position));
-        List<String> list=new ArrayList<>();
-        list.add("111");
-        list.add("222");
-        AlbumDetailAdapter albumDetailAdapter=new AlbumDetailAdapter(mTimeList.get(position),list);
+        AlbumDetailAdapter albumDetailAdapter = new AlbumDetailAdapter(mMapList.get(mTimeList.get(position)));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         holder.mRv.setLayoutManager(linearLayoutManager);
@@ -58,4 +83,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
     public int getItemCount() {
         return mTimeList.size();
     }
+
+    public List<String> getTimeList(){
+        return mTimeList;
+    }
+
 }

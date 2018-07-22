@@ -1,5 +1,6 @@
 package fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,22 +13,30 @@ import android.view.ViewGroup;
 import com.example.sure.photomanager.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import adapter.OtherAdapter;
+import bean.Photo;
 
 public class OtherFragment extends Fragment {
     private RecyclerView mRv;
     private List<String> mAlbumList=new ArrayList<>();
+    private HashMap<String, List<Photo>> mAllPhotosTemp=new HashMap<>();
 
+
+    public OtherFragment() {
+    }
+
+    @SuppressLint("ValidFragment")
+    public OtherFragment(List<String> mAlbumList, HashMap<String, List<Photo>> mAllPhotosTemp) {
+        this.mAlbumList = mAlbumList;
+        this.mAllPhotosTemp = mAllPhotosTemp;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAlbumList.add("111");
-        mAlbumList.add("222");
-        mAlbumList.add("333");
-        mAlbumList.add("444");
     }
 
     @Nullable
@@ -38,7 +47,7 @@ public class OtherFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRv.setLayoutManager(linearLayoutManager);
-        OtherAdapter adapter=new OtherAdapter(mAlbumList);
+        OtherAdapter adapter=new OtherAdapter(mAlbumList,mAllPhotosTemp);
         mRv.setAdapter(adapter);
         return view;
     }
