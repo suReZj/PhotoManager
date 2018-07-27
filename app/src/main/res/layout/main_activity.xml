@@ -5,55 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.sure.photomanager.Activity.MainActivity">
-
-    <android.support.design.widget.AppBarLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:id="@+id/activity_main_abl">
-        <android.support.v7.widget.Toolbar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/activity_main_toolbar"
-            android:theme="@style/toolBar"/>
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.design.widget.TabLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp"
-        android:id="@+id/activity_main_tl"
-        android:layout_below="@id/activity_main_abl"
-        >
-
-        <!--<android.support.design.widget.TabItem-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/album" />-->
-
-        <!--<android.support.design.widget.TabItem-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/other" />-->
-
-        <!--<android.support.design.widget.TabItem-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/collect" />-->
-
-        <!--<android.support.design.widget.TabItem-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/secret"-->
-            <!--/>-->
-    </android.support.design.widget.TabLayout>
-
-    <android.support.v4.view.ViewPager
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/activity_main_vp"
-        android:layout_below="@id/activity_main_tl"
-        />
-
+        android:layout_above="@id/main_activity_BNV"
+        android:id="@+id/main_activity_fl"/>
+<android.support.design.widget.BottomNavigationView
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:background="?android:attr/windowBackground"
+    app:itemBackground="@null"
+    app:menu="@menu/activity_main_navigation_bottom"
+    app:itemIconTint="@drawable/bottom_navigation_selector"
+    app:itemTextColor="@drawable/bottom_navigation_selector"
+    android:id="@+id/main_activity_BNV"
+    >
+</android.support.design.widget.BottomNavigationView>
 </RelativeLayout>

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.media.ExifInterface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +42,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
         String time=null;
         for (int i = 0; i < mPhotoList.size(); i++) {
-            time=mPhotoList.get(i).getmExifInterface().getAttribute(ExifInterface.TAG_DATETIME);
+            time=mPhotoList.get(i).getmDate();
             if(time!=null){
                 time=time.substring(0,10);
             }
@@ -73,9 +73,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTv.setText(mTimeList.get(position));
         AlbumDetailAdapter albumDetailAdapter = new AlbumDetailAdapter(mMapList.get(mTimeList.get(position)));
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        holder.mRv.setLayoutManager(linearLayoutManager);
+        RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        holder.mRv.setLayoutManager(mLayoutManager);
         holder.mRv.setAdapter(albumDetailAdapter);
     }
 

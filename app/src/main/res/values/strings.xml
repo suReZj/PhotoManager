@@ -6,4 +6,16 @@
     <string name="secret">私密</string>
     <string name="photograph">相机</string>
     <string name="inputPassword">输入密码</string>
+    <string name="guide_title1">智能分类，高效云备份</string>
+    <string name="guide_title2">你的回忆，由我守护</string>
+    <string name="open">去开启</string>
+    <string name="home">首页</string>
+    <string name="intelligent">智能分类</string>
+    <string name="cloudAlbum">云相册</string>
+    <string name="personalCenter">个人中心</string>
+    <string name="myAlbum">我的相册</string>
+    <string name="arrangement">已整理</string>
+    <string name="scanning">正在扫描图片...</string>
+    <string name="backups">备份</string>
+    <string name="checkPhoto">输入搜索的图片</string>
 </resources>

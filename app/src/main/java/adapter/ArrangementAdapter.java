@@ -10,9 +10,9 @@ import com.example.sure.photomanager.R;
 
 import java.util.List;
 
-public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHolder> {
-    private Context mContext;
+public class ArrangementAdapter extends RecyclerView.Adapter<ArrangementAdapter.ViewHolder> {
     private List<String> mList;
+    private Context mContext;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         public ViewHolder(View itemView) {
@@ -20,7 +20,7 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
         }
     }
 
-    public CollectAdapter(List<String> mList) {
+    public ArrangementAdapter(List<String> mList) {
         this.mList = mList;
     }
 
@@ -29,7 +29,7 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
         if (mContext == null) {
             mContext = parent.getContext();
         }
-        View view = LayoutInflater.from(mContext).inflate(R.layout.collect_rv_item, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.arrangement_rv_item, parent, false);
         final ViewHolder holder = new ViewHolder(view);
         return holder;
     }
