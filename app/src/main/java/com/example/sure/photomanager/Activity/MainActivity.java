@@ -14,12 +14,14 @@ import android.view.View;
 import com.example.sure.photomanager.R;
 
 import fragment.HomeFragment;
+import fragment.IntelligentFragment;
 import widght.BottomNavigationViewHelper;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView mBottomNavigationView;
     private FragmentManager mFragmentManager;
     private HomeFragment mHomeFragment;
+    private IntelligentFragment mIntelligentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +34,14 @@ public class MainActivity extends AppCompatActivity {
     public void initView() {
         mBottomNavigationView = findViewById(R.id.main_activity_BNV);
         BottomNavigationViewHelper.disableShiftMode(mBottomNavigationView);
-        mFragmentManager=getSupportFragmentManager();
-        mHomeFragment=new HomeFragment();
+        mFragmentManager = getSupportFragmentManager();
+        mHomeFragment = new HomeFragment();
+        mIntelligentFragment = new IntelligentFragment();
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.add(R.id.main_activity_fl, mHomeFragment);
+        ft.add(R.id.main_activity_fl,mIntelligentFragment);
         ft.show(mHomeFragment);
+        ft.hide(mIntelligentFragment);
         ft.commit();
     }
 
@@ -46,8 +51,16 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_bottom_home:
+                        FragmentTransaction ft = mFragmentManager.beginTransaction();
+                        ft.hide(mIntelligentFragment);
+                        ft.show(mHomeFragment);
+                        ft.commit();
                         break;
                     case R.id.navigation_bottom_intelligent:
+                        ft = mFragmentManager.beginTransaction();
+                        ft.show(mIntelligentFragment);
+                        ft.hide(mHomeFragment);
+                        ft.commit();
                         break;
                     case R.id.navigation_bottom_cloudAlbum:
                         break;

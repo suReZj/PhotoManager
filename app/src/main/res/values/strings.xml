@@ -18,4 +18,13 @@
     <string name="scanning">正在扫描图片...</string>
     <string name="backups">备份</string>
     <string name="checkPhoto">输入搜索的图片</string>
+    <string name="GIF">GIF</string>
+    <string name="type">类型</string>
+    <string name="character">人物</string>
+    <string name="Cartoon">卡通</string>
+    <string name="location">地点</string>
+    <string name="GZ">广州</string>
+    <string name="SZ">深圳</string>
+    <string name="BJ">北京</string>
+    <string name="SH">上海</string>
 </resources>
