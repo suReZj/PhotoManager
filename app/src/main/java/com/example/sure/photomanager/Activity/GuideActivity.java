@@ -105,7 +105,7 @@ public class GuideActivity extends AppCompatActivity {
                         MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "=? or " +
                                 MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "=?",
                         new String[]{"image/jpeg", "image/png", "image/jpg", "image/bmp"},
-                        MediaStore.Images.Media.DATE_MODIFIED + " desc");
+                        MediaStore.Images.Media.DATE_TAKEN + " desc");
 
                 int length = LitePal.findAll(Photo.class).size();
                 if (mCursor != null && (length != mCursor.getCount())) {
@@ -132,6 +132,7 @@ public class GuideActivity extends AppCompatActivity {
                         }
 
                         List<Photo> existPhoto = LitePal.where("mLocalPath = ?", path).find(Photo.class);
+
                         if (existPhoto.size() > 0) {
                             Log.e("continue", existPhoto.get(0).getmLocalPath());
                             continue;

@@ -2,9 +2,13 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#1fadff</color>
+    <color name="colorAccent">#212121</color>
     <color name="white">#FFFFFF</color>
     <color name="open_btn_color">#0099ff</color>
-    <color name="tab_checked">#1fadff</color>
+    <color name="tab_checked">#212121</color>
     <color name="tab_unchecked">#cdcdcd</color>
+    <color name="black">#000000</color>
+    <color name="maskColor">#80000000</color>
+    <color name="noMask">#00FFFFFF</color>
+    <color name="colorGray">#ccc</color>
 </resources>

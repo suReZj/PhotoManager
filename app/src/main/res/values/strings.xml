@@ -27,4 +27,26 @@
     <string name="SZ">深圳</string>
     <string name="BJ">北京</string>
     <string name="SH">上海</string>
+    <string name="clickToLogin">点击登录，立刻开启云相册</string>
+    <string name="xxxM">500M备份空间，照片永不丢失</string>
+    <string name="expand">扩容</string>
+    <string name="myCloud">我的云相册</string>
+    <string name="myFile">我的文件夹</string>
+    <string name="userName">用户名称</string>
+    <string name="spaceUsed">0M/500M  空间使用0%</string>
+    <string name="setting">账户设置</string>
+    <string name="phoneClean">手机瘦身</string>
+    <string name="cancel">取消</string>
+    <string name="arrange">整理</string>
+    <string name="more">更多</string>
+    <string name="delete">删除</string>
+    <string name="Sort_to_Album">Sort to</string>
+    <string name="add_album">Add Album</string>
+    <string name="select">已选</string>
+    <string name="add_existing_albums">Add Exisiting Albums</string>
+    <string name="create">create</string>
+    <string name="select_all">Select all</string>
+    <string name="cancel_select">Cancel select</string>
+    <string name="please_select">Please select</string>
+    <string name="time">July26,2018</string>
 </resources>

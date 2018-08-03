@@ -1,6 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/cloud_fragment_icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_margin="10dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/cloud_fragment_clickTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/cloud_fragment_icon"
+        android:text="@string/clickToLogin"
+        android:textStyle="bold"
+         />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cloud_fragment_clickTv"
+        android:layout_marginTop="15dp"
+        android:layout_toRightOf="@id/cloud_fragment_icon"
+        android:text="@string/xxxM"
+        android:textStyle="bold"
+        android:id="@+id/cloud_fragment_xxxM"/>
+
+    <ProgressBar
+        android:id="@+id/cloud_fragment_progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/cloud_fragment_icon"
+        android:layout_below="@id/cloud_fragment_xxxM"
+        android:layout_marginTop="10dp"
+        android:progress="30"
+        />
+<Button
+    android:layout_width="50dp"
+    android:layout_height="30dp"
+    android:text="@string/expand"
+    android:background="@color/tab_checked"
+    android:textColor="@color/white"
+    android:layout_alignParentRight="true"
+    android:layout_alignBottom="@id/cloud_fragment_progressBar"
+    android:layout_marginHorizontal="5dp"
+    />
+<android.support.design.widget.TabLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/cloud_fragment_icon"
+    android:layout_marginTop="5dp"
+    android:id="@+id/cloud_fragment_tl"/>
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cloud_fragment_tl"
+        android:id="@+id/cloud_fragment_vp"/>
+
 
 </RelativeLayout>

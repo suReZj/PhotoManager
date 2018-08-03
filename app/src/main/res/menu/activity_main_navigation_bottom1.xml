@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_bottom_home"
+        android:icon="@mipmap/ic_home"
+        android:title="" />
+    <item
+        android:id="@+id/navigation_bottom_intelligent"
+        android:icon="@mipmap/ic_category"
+        android:title="" />
+    <item
+        android:id="@+id/navigation_bottom_cloudAlbum"
+        android:icon="@mipmap/ic_photo"
+        android:title="" />
+</menu>
