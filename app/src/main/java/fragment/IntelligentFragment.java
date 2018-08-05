@@ -1,5 +1,6 @@
 package fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,12 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.example.sure.photomanager.Activity.SearchActivity;
 import com.example.sure.photomanager.R;
 
 public class IntelligentFragment extends Fragment {
-    private Toolbar mToolbar;
-    private AppCompatActivity mAppCompatActivity;
+    private TextView mSearchTv;
 
     public IntelligentFragment() {
     }
@@ -28,12 +30,14 @@ public class IntelligentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.intelligent_fragment, null);
-//        mToolbar=view.findViewById(R.id.intelligent_fragment_toolbar);
-//        mAppCompatActivity.setSupportActionBar(mToolbar);
-//        ActionBar actionBar = mAppCompatActivity.getSupportActionBar();
-//        if (actionBar != null) {
-//            actionBar.setDisplayHomeAsUpEnabled(false);
-//        }
+        mSearchTv=view.findViewById(R.id.intelligent_fragment_search);
+        mSearchTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getContext(), SearchActivity.class);
+                getContext().startActivity(intent);
+            }
+        });
         return view;
     }
 }

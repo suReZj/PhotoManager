@@ -22,7 +22,8 @@
         </activity>
         <activity android:name=".Activity.MainActivity" />
         <activity android:name=".Activity.ShowActivity" />
-        <activity android:name=".Activity.SearchActivity"></activity>
+        <activity android:name=".Activity.SearchActivity" />
+        <activity android:name=".Activity.PasswordActivity"></activity>
     </application>
 
 </manifest>
