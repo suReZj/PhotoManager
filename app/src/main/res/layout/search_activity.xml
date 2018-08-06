@@ -1,9 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.SearchActivity">
+    tools:context=".Activity.SearchActivity"
+    android:fitsSystemWindows="true"
+    >
+    <com.mancj.materialsearchbar.MaterialSearchBar
+        style="@style/MaterialSearchBarLight"
+        app:mt_speechMode="false"
+        app:mt_hint="Custom hint"
+        app:mt_maxSuggestionsCount="10"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:id="@+id/search_activity_searchBar"
+        app:mt_roundedSearchBarEnabled="true"
+        android:layout_centerHorizontal="true"
+        />
+    <!--<EditText-->
+        <!--android:layout_width="300dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@drawable/circle_button"-->
+        <!--android:id="@+id/search_activity_et"-->
+        <!--/>-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:text="History"
+        android:layout_below="@id/search_activity_searchBar"
+        android:layout_marginLeft="20dp"
+        android:textStyle="bold"
+        android:id="@+id/search_activity_history"
+        android:layout_marginTop="10dp"
+        />
 
-</android.support.constraint.ConstraintLayout>
+    <com.zhy.view.flowlayout.TagFlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_activity_history"
+        app:max_select="1"
+        android:padding="20dp"
+        android:id="@+id/search_activity_flow1"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:text="Types"
+        android:layout_below="@id/search_activity_flow1"
+        android:layout_marginLeft="20dp"
+        android:textStyle="bold"
+        android:id="@+id/search_activity_types"
+        android:layout_marginTop="10dp"
+        />
+
+    <com.zhy.view.flowlayout.TagFlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_activity_types"
+        app:max_select="1"
+        android:padding="20dp"
+        android:id="@+id/search_activity_flow2"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:text="Location"
+        android:layout_below="@id/search_activity_flow2"
+        android:layout_marginLeft="20dp"
+        android:textStyle="bold"
+        android:id="@+id/search_activity_location"
+        android:layout_marginTop="10dp"
+        />
+
+    <com.zhy.view.flowlayout.TagFlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_activity_location"
+        app:max_select="1"
+        android:padding="20dp"
+        android:id="@+id/search_activity_flow3"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:text="Festival"
+        android:layout_below="@id/search_activity_flow3"
+        android:layout_marginLeft="20dp"
+        android:textStyle="bold"
+        android:id="@+id/search_activity_festival"
+        android:layout_marginTop="10dp"
+        />
+
+    <com.zhy.view.flowlayout.TagFlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_activity_festival"
+        app:max_select="1"
+        android:padding="20dp"
+        android:id="@+id/search_activity_flow4"
+        />
+</RelativeLayout>
