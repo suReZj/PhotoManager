@@ -15,20 +15,22 @@
     android:layout_alignParentLeft="true"/>
 
     <TextView
-        android:id="@+id/text_view"
+        android:id="@+id/dialog_list_item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:textColor="@android:color/black"
         android:text="11111"
         android:textSize="20sp"
-        android:layout_toRightOf="@id/dialog_list_item_cb"/>
+        android:layout_toRightOf="@id/dialog_list_item_cb"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:text="3"
         android:textSize="15sp"
+        android:id="@+id/dialog_list_item_sum"
         />
 
 </RelativeLayout>

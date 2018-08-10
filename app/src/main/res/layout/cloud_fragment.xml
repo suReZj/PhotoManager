@@ -9,59 +9,80 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_margin="10dp"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/logo" />
 
-    <TextView
-        android:id="@+id/cloud_fragment_clickTv"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_toRightOf="@id/cloud_fragment_icon"
-        android:text="@string/clickToLogin"
-        android:textStyle="bold"
-         />
+        android:orientation="vertical"
+        android:id="@+id/cloud_fragment_layout"
+        >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cloud_fragment_clickTv"
-        android:layout_marginTop="15dp"
-        android:layout_toRightOf="@id/cloud_fragment_icon"
-        android:text="@string/xxxM"
-        android:textStyle="bold"
-        android:id="@+id/cloud_fragment_xxxM"/>
+        <TextView
+            android:id="@+id/cloud_fragment_clickTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/clickToLogin"
+            android:textStyle="bold"
+            android:layout_marginVertical="10dp"
+            android:textSize="15sp"/>
 
-    <ProgressBar
-        android:id="@+id/cloud_fragment_progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cloud_fragment_icon"
-        android:layout_below="@id/cloud_fragment_xxxM"
-        android:layout_marginTop="10dp"
-        android:progress="30"
+        <TextView
+            android:id="@+id/cloud_fragment_xxxM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cloud_fragment_clickTv"
+            android:layout_toRightOf="@id/cloud_fragment_icon"
+            android:layout_weight="1"
+            android:text="0M/500M"
+            android:textSize="12sp" />
+
+        <ProgressBar
+            android:id="@+id/cloud_fragment_progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:progress="0" />
+    </LinearLayout>
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:layout_marginHorizontal="10dp"
+        android:background="@drawable/circle_button"
+        android:text="@string/expand"
+        android:textColor="@color/black"
+        android:layout_toRightOf="@id/cloud_fragment_layout"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/cloud_fragment_expand"
+        android:textSize="10sp"
         />
-<Button
-    android:layout_width="50dp"
-    android:layout_height="30dp"
-    android:text="@string/expand"
-    android:background="@color/tab_checked"
-    android:textColor="@color/white"
-    android:layout_alignParentRight="true"
-    android:layout_alignBottom="@id/cloud_fragment_progressBar"
-    android:layout_marginHorizontal="5dp"
-    />
-<android.support.design.widget.TabLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/cloud_fragment_icon"
-    android:layout_marginTop="5dp"
-    android:id="@+id/cloud_fragment_tl"/>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/cloud_fragment_tl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cloud_fragment_icon"
+        android:layout_marginTop="5dp"
+        />
+
     <android.support.v4.view.ViewPager
+        android:id="@+id/cloud_fragment_vp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/cloud_fragment_tl"
-        android:id="@+id/cloud_fragment_vp"/>
+        />
 
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_or_register"
+        android:layout_centerInParent="true"
+        android:background="@drawable/circle_button"
+        android:id="@+id/cloud_fragment_login_btn"/>
 </RelativeLayout>

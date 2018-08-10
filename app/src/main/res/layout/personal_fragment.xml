@@ -3,116 +3,140 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/personal_fragment_icon"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_margin="10dp"
-        android:src="@mipmap/ic_launcher"
+        android:src="@mipmap/logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:id="@+id/personal_fragment_icon"
         />
-
-    <TextView
-        android:id="@+id/personal_fragment_clickTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_toRightOf="@id/personal_fragment_icon"
-        android:text="@string/userName"
-        android:textStyle="bold"
-        />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/personal_fragment_clickTv"
-        android:layout_marginTop="15dp"
-        android:layout_toRightOf="@id/personal_fragment_icon"
-        android:text="@string/spaceUsed"
+        android:text="Go Album"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:id="@+id/personal_fragment_xxxM"/>
+        android:layout_below="@+id/personal_fragment_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginVertical="10dp"
+        android:id="@+id/personal_fragment_name"/>
 
-    <ProgressBar
-        android:id="@+id/personal_fragment_progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="180dp"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/personal_fragment_icon"
-        android:layout_below="@id/personal_fragment_xxxM"
-        android:layout_marginTop="10dp"
-        android:progress="30"
-        />
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="30dp"
-        android:text="@string/expand"
-        android:background="@color/tab_checked"
-        android:textColor="@color/white"
-        android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/personal_fragment_progressBar"
-        android:layout_marginHorizontal="5dp"
-        />
+        android:layout_below="@id/personal_fragment_name"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/personal_fragment_rl">
+        <ProgressBar
+            android:id="@+id/personal_fragment_progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/personal_fragment_xxxM"
+            android:progress="0"
+            android:layout_marginLeft="50dp"
+            />
+        <TextView
+            android:id="@+id/personal_fragment_xxxM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0M/500M"
+            android:textSize="12sp"
+            android:layout_marginLeft="50dp"
+            />
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/circle_button"
+            android:layout_marginRight="50dp"
+            android:text="@string/expand"
+            />
+    </RelativeLayout>
 
-    <LinearLayout
+    <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_below="@id/personal_fragment_progressBar"
-        android:layout_marginTop="10dp"
-        android:id="@+id/personal_fragment_ll">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="私密相册"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="手机瘦身"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:textStyle="bold"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/personal_fragment_ll"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="5dp"
-        android:id="@+id/personal_fragment_settingLayout">
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@mipmap/ic_launcher"
-            android:layout_marginRight="20dp"/>
-        <TextView
+        android:layout_marginTop="50dp"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:layout_below="@id/personal_fragment_rl"
+        android:id="@+id/personal_fragment_gl">
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/setting"
-            android:layout_gravity="center"
-            />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/personal_fragment_settingLayout"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="5dp">
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@mipmap/ic_launcher"
-            android:layout_marginRight="20dp"/>
-        <TextView
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:id="@+id/personal_fragment_private_album"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_lock_b" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginVertical="10dp"
+                android:text="@string/private_album"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/phoneClean"
-            android:layout_gravity="center"
-            />
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
-    </LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_clean" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/album_clean"
+                android:layout_marginVertical="10dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="30dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_settings_b" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/settings"
+                android:layout_marginVertical="10dp"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </GridLayout>
+
+
 </RelativeLayout>

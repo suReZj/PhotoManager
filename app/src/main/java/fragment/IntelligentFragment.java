@@ -30,14 +30,13 @@ public class IntelligentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.intelligent_fragment, null);
-        mSearchTv=view.findViewById(R.id.intelligent_fragment_search);
-        mSearchTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(getContext(), SearchActivity.class);
-                getContext().startActivity(intent);
-            }
-        });
+//        mSearchTv.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent=new Intent(getContext(), SearchActivity.class);
+//                getContext().startActivity(intent);
+//            }
+//        });
         return view;
     }
 }

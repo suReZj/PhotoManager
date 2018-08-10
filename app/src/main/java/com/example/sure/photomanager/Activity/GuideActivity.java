@@ -27,12 +27,16 @@ import org.litepal.crud.callback.SaveCallback;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import bean.Album;
 import bean.Photo;
+import untils.DateUtil;
 
 public class GuideActivity extends AppCompatActivity {
     private final int REQUEST_CAMERA_PERMISSION = 0;
@@ -51,12 +55,12 @@ public class GuideActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.guide_activity);
         mBtn = findViewById(R.id.guide_activity_btn);
-        mPb=findViewById(R.id.guide_activity_pb);
-        mTv=findViewById(R.id.guide_activity_tv);
+        mPb = findViewById(R.id.guide_activity_pb);
+        mTv = findViewById(R.id.guide_activity_tv);
         mBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(GuideActivity.this,MainActivity.class);
+                Intent intent = new Intent(GuideActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -71,10 +75,15 @@ public class GuideActivity extends AppCompatActivity {
     public void requestPermission() {
         if (ActivityCompat.checkSelfPermission(GuideActivity.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(GuideActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(GuideActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(GuideActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(GuideActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                ) {
             Log.e("CameraNew", "Lacking privileges to access camera service, please request permission first.");
             ActivityCompat.requestPermissions(GuideActivity.this, new String[]{
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.INTERNET,
+                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
             }, REQUEST_CAMERA_PERMISSION);
         }
     }
@@ -103,12 +112,13 @@ public class GuideActivity extends AppCompatActivity {
                 Cursor mCursor = getContentResolver().query(mImageUri,
                         projImage,
                         MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "=? or " +
-                                MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "=?",
-                        new String[]{"image/jpeg", "image/png", "image/jpg", "image/bmp"},
+                                MediaStore.Images.Media.MIME_TYPE + "=?",
+                        new String[]{"image/jpeg", "image/png", "image/jpg"},
                         MediaStore.Images.Media.DATE_TAKEN + " desc");
 
                 int length = LitePal.findAll(Photo.class).size();
                 if (mCursor != null && (length != mCursor.getCount())) {
+                    LitePal.deleteAll(Photo.class);
                     ExifInterface exifInterface = null;
                     String longitude = null;//经度
                     String latitude = null;//纬度
@@ -134,12 +144,23 @@ public class GuideActivity extends AppCompatActivity {
                         List<Photo> existPhoto = LitePal.where("mLocalPath = ?", path).find(Photo.class);
 
                         if (existPhoto.size() > 0) {
-                            Log.e("continue", existPhoto.get(0).getmLocalPath());
                             continue;
                         } else {
                             longitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
                             latitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
                             date = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+                            String latRef = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
+                            String lngRef = exifInterface.getAttribute
+                                    (ExifInterface.TAG_GPS_LONGITUDE_REF);
+                            if (latitude != null && longitude != null) {
+                                latitude = String.valueOf(convertRationalLatLonToFloat(latitude, latRef));
+                                longitude = String.valueOf(convertRationalLatLonToFloat(longitude, lngRef));
+                            }
+
+//                            if (date != null && date.length() > 0) {
+//                                date = date.substring(0, 10);
+//                                date = DateUtil.changeTime(date);
+//                            }
                             Photo photo = new Photo(path, size, displayName, dirPath, date, longitude, latitude);
                             photo.saveAsync().listen(new SaveCallback() {
                                 @Override
@@ -147,14 +168,14 @@ public class GuideActivity extends AppCompatActivity {
 
                                 }
                             });
-                            List<Album> albumList=LitePal.where("mPath = ?",dirPath).find(Album.class);
-                            if(albumList.size()>0){
+                            List<Album> albumList = LitePal.where("mPath = ?", dirPath).find(Album.class);
+                            if (albumList.size() > 0) {
 
-                            }else {
-                                String name=dirPath;
-                                int index=name.lastIndexOf("/");
-                                name=name.substring(index+1,name.length());
-                                Album album=new Album(dirPath,name);
+                            } else {
+                                String name = dirPath;
+                                int index = name.lastIndexOf("/");
+                                name = name.substring(index + 1, name.length());
+                                Album album = new Album(dirPath, name);
                                 album.saveAsync().listen(new SaveCallback() {
                                     @Override
                                     public void onFinish(boolean success) {
@@ -198,4 +219,30 @@ public class GuideActivity extends AppCompatActivity {
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
+
+    private float convertRationalLatLonToFloat(
+            String rationalString, String ref) {
+
+        String[] parts = rationalString.split(",");
+
+        String[] pair;
+        pair = parts[0].split("/");
+        double degrees = Double.parseDouble(pair[0].trim())
+                / Double.parseDouble(pair[1].trim());
+
+        pair = parts[1].split("/");
+        double minutes = Double.parseDouble(pair[0].trim())
+                / Double.parseDouble(pair[1].trim());
+
+        pair = parts[2].split("/");
+        double seconds = Double.parseDouble(pair[0].trim())
+                / Double.parseDouble(pair[1].trim());
+
+        double result = degrees + (minutes / 60.0) + (seconds / 3600.0);
+        if ((ref.equals("S") || ref.equals("W"))) {
+            return (float) -result;
+        }
+        return (float) result;
+    }
+
 }

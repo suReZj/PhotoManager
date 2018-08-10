@@ -39,4 +39,7 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
     implementation 'com.github.mancj:MaterialSearchBar:0.7.6'
     implementation 'com.hyman:flowlayout-lib:1.1.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.github.nanchen2251:CompressHelper:1.0.5'
 }

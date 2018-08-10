@@ -88,7 +88,7 @@ public class HomeFragment extends Fragment {
             mTv.setText(getString(R.string.please_select));
         }else {
             mTv.setText("");
-            String text = getString(R.string.select).concat(String.valueOf(event.getmSum()));
+            String text = getString(R.string.select).concat("(").concat(String.valueOf(event.getmSum())).concat(")");
             mTv.setText(text);
         }
     }
@@ -135,5 +135,13 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void refreshData(){
+        mAlbumFragment.refreshData();
+    }
+
+    public boolean getIsSelected() {
+        return mAlbumFragment.getIsSelected();
     }
 }

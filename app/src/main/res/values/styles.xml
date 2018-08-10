@@ -9,7 +9,7 @@
     </style>
 
     <style name="toolBar">
-    <item name="colorControlNormal">#ffffff</item>
+        <item name="colorControlNormal">#ffffff</item>
     </style>
 
 

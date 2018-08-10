@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="8dp">
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/add_existing_albums"
     android:textSize="20sp"
     android:textStyle="bold"
-    android:layout_alignParentLeft="true"/>
+    android:textColor="@color/black"
+    android:layout_alignParentLeft="true"
+    android:gravity="center"
+    android:layout_centerVertical="true"
+    android:layout_marginLeft="10dp"/>
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
         android:layout_alignParentRight="true"
         android:text="@string/create"
+        android:background="@drawable/circle_button"
+        android:id="@+id/arrangement_dialog_header_btn"
         />
 </RelativeLayout>

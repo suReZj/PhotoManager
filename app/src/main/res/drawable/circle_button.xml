@@ -8,7 +8,7 @@
         android:width="0.5dp"
         android:color="@color/tab_checked"/>
     <!-- 圆角 -->
-    <corners android:radius="3dp"/>
+    <corners android:radius="10dp"/>
     <!-- 边距 -->
     <padding
         android:top="2dp"

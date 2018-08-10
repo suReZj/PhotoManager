@@ -125,6 +125,11 @@ public class SmoothImageView extends PhotoView {
             canvas.drawPaint(mPaint);
             super.onDraw(canvas);
         } else {
+            if(mPaint==null){
+                mPaint = new Paint();
+                mPaint.setStyle(Paint.Style.FILL);
+                mPaint.setColor(getContext().getColor(R.color.white));
+            }
             mPaint.setAlpha(0);
             canvas.drawPaint(mPaint);
             super.onDraw(canvas);

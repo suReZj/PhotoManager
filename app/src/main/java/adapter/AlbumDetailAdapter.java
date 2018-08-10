@@ -78,7 +78,7 @@ public class AlbumDetailAdapter extends RecyclerView.Adapter<AlbumDetailAdapter.
                 @Override
                 public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
 //                    holder.mLayout.setBackground(mContext.getDrawable(R.color.tab_checked));
-                    holder.mLayout.setForeground(mContext.getDrawable(R.color.maskColor));
+                    holder.mLayout.setForeground(mContext.getDrawable(R.mipmap.mask));
                     return false;
                 }
             }).centerCrop().into(holder.mImage);
