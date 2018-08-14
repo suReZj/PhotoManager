@@ -2,6 +2,7 @@ package com.example.sure.photomanager.Activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +12,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
@@ -35,6 +37,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sure.photomanager.R;
+import com.google.gson.Gson;
 import com.nanchen.compresshelper.CompressHelper;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.GridHolder;
@@ -56,12 +59,25 @@ import java.util.Map;
 import adapter.ShowAlbumAdapter;
 import adapter.ShowFragmentAdapter;
 import bean.ArrangementAlbum;
+import bean.Password;
 import bean.Photo;
 import bean.PrivatePhoto;
+import bean.UploadPhoto;
 import bean.User;
 import event.DeleteAndShowNextEvent;
+import event.LoginEvent;
 import event.RefreshData;
+import event.UploadEvent;
 import fragment.ShowFragment;
+import gson.RegisterAndLoginGson;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import untils.DateUtil;
 import untils.FileUtil;
 import untils.WordUtil;
@@ -94,6 +110,21 @@ public class ShowActivity extends AppCompatActivity {
     private int mIndex;
     private String mOperationPath = null;
     private LocationManager locationManager;
+
+    Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    Toast.makeText(ShowActivity.this, "Successful upload", Toast.LENGTH_SHORT).show();
+                    break;
+                case 1:
+                    Toast.makeText(ShowActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            return false;
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -280,11 +311,18 @@ public class ShowActivity extends AppCompatActivity {
         mPrivateImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOperationPath = mPhotoList.get(mViewPager.getCurrentItem()).getmLocalPath();
-                changeViewPager();
-                List<String> mPath = new ArrayList<>();
-                mPath.add(mOperationPath);
-                lockPhoto(mPath);
+                List<Password> mPassword = LitePal.findAll(Password.class);
+                if (mPassword.size() == 0) {
+                    Intent intent = new Intent(ShowActivity.this, PrivatePasswordActivity.class);
+                    startActivity(intent);
+                } else {
+                    mOperationPath = mPhotoList.get(mViewPager.getCurrentItem()).getmLocalPath();
+                    changeViewPager();
+                    List<String> mPath = new ArrayList<>();
+                    mPath.add(mOperationPath);
+                    lockPhoto(mPath);
+                }
+
             }
         });
 
@@ -294,6 +332,9 @@ public class ShowActivity extends AppCompatActivity {
                 List<User> list = LitePal.findAll(User.class);
                 if (list.size() == 0) {
                     Toast.makeText(ShowActivity.this, "Please Login", Toast.LENGTH_SHORT).show();
+                } else {
+                    mOperationPath = mPhotoList.get(mViewPager.getCurrentItem()).getmLocalPath();
+                    upLoadPhoto(mOperationPath);
                 }
             }
         });
@@ -456,13 +497,65 @@ public class ShowActivity extends AppCompatActivity {
             }
             Log.e("city", city.toString());
         }
-        if(city.length()!=0){
+        if (city.length() != 0) {
             city = city.substring(0, city.length() - 1);
             city = WordUtil.getInstance().getSelling(city.toString());
-            String city1=city.substring(1,city.length());
-            String first=city.substring(0,1).toUpperCase();
-            city=first.concat(city1);
+            String city1 = city.substring(1, city.length());
+            String first = city.substring(0, 1).toUpperCase();
+            city = first.concat(city1);
         }
         return city;
+    }
+
+
+    public void upLoadPhoto(String path) {
+        final List<User> list = LitePal.findAll(User.class);
+        final List<Photo> photo = LitePal.where("mLocalPath = ?", path).find(Photo.class);
+        OkHttpClient mOkHttpClent = new OkHttpClient();
+        File file = new File(path);
+        Log.e("oldName", file.getName());
+        File newFile = CompressHelper.getDefault(this).compressToFile(file);
+        Log.e("NewName", newFile.getName());
+
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        RequestBody body = RequestBody.create(MediaType.parse("image/*"), newFile);
+        final String filename = file.getName();
+        // 参数分别为， 请求key ，文件名称 ， RequestBody
+        requestBody.addFormDataPart("file", filename, body);
+
+        Request request = new Request.Builder().url("http://www.ligohan.com:8080/springboot-security-demo/api/file/upload").post(requestBody.build()).build();
+
+
+        Call call = mOkHttpClent.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("faile", "onFailure: " + e);
+                Message msg = handler.obtainMessage();
+                msg.what = 1;
+                handler.sendMessage(msg);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.e("success", "成功" + response);
+                Gson gson = new Gson();
+                RegisterAndLoginGson registerAndLoginGson = gson.fromJson(response.body().string(), RegisterAndLoginGson.class);
+                if (registerAndLoginGson.isIs_success()) {
+                    UploadPhoto uploadPhoto = new UploadPhoto("http://www.ligohan.com:8080/springboot-security-demo/api/file/download?fileName=" + filename, list.get(0).getmPhone(), photo.get(0));
+                    uploadPhoto.save();
+                    Message msg = handler.obtainMessage();
+                    msg.what = 0;
+                    handler.sendMessage(msg);
+                    EventBus.getDefault().post(new UploadEvent());
+                    EventBus.getDefault().post(new LoginEvent());
+                } else {
+                    Message msg = handler.obtainMessage();
+                    msg.what = 1;
+                    handler.sendMessage(msg);
+                }
+
+            }
+        });
     }
 }

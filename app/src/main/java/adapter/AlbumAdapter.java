@@ -212,7 +212,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
                 if (list.size() == 0) {
                     Toast.makeText(mContext, "Please Login", Toast.LENGTH_SHORT).show();
                 } else {
-                    upLoadImage(mMapList.get(mTimeList.get(position)).get(0).getmLocalPath());
+                    for (int i = 0; i < mMapList.get(mTimeList.get(position)).size(); i++) {
+                        upLoadImage(mMapList.get(mTimeList.get(position)).get(i).getmLocalPath());
+                    }
                 }
             }
         });

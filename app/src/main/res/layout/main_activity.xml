@@ -22,8 +22,20 @@
     android:id="@+id/main_activity_BNV"
     />
 
+
     <me.majiajie.pagerbottomtabstrip.PageNavigationView
         android:id="@+id/tab"
+        android:layout_width="match_parent"
+        android:layout_height="66dp"
+        android:layout_gravity="bottom"
+        android:background="@android:color/transparent"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        />
+
+
+    <me.majiajie.pagerbottomtabstrip.PageNavigationView
+        android:id="@+id/tab1"
         android:layout_width="match_parent"
         android:layout_height="66dp"
         android:layout_gravity="bottom"

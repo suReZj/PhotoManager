@@ -27,14 +27,13 @@
     <string name="SZ">深圳</string>
     <string name="BJ">北京</string>
     <string name="SH">上海</string>
-    <string name="clickToLogin">点击登录，立刻开启云相册</string>
+    <string name="clickToLogin">Not logged in</string>
     <string name="xxxM">500M备份空间，照片永不丢失</string>
     <string name="expand">Expand</string>
     <string name="myCloud">Photo</string>
     <string name="myFile">Album</string>
     <string name="userName">用户名称</string>
     <string name="spaceUsed">0M/500M  空间使用0%</string>
-    <string name="setting">账户设置</string>
     <string name="phoneClean">手机瘦身</string>
     <string name="cancel">Cancel</string>
     <string name="arrange">整理</string>
@@ -69,4 +68,9 @@
     <string name="create_password">Create Password</string>
     <string name="encrypting">Encrypting</string>
     <string name="please_wait">Please wait...</string>
+    <string name="go_album">Go Album</string>
+    <string name="guard">Guard your memories</string>
+    <string name="space_size">M/500M</string>
+    <string name="click_login">Click to Login</string>
+    <string name="setting">setting</string>
 </resources>

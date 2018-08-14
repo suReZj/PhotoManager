@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,67 +7,51 @@
     android:orientation="vertical"
     tools:context=".Activity.GuideActivity">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/guide_activity_album"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:src="@mipmap/logo75x" />
+
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/guide_activity_album"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:gravity="center"
-        android:text="广告位"
-        android:textSize="30sp" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:text="@string/go_album"
+        android:textColor="@color/tab_checked"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_below="@id/guide_activity_album"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/guard"
+        android:textColor="@color/tab_checked" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/guide_title1"
-            android:textSize="25sp"
-            android:textStyle="bold"
-
-            />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/guide_title2"
-            android:textSize="20sp" />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <ProgressBar
+        android:id="@+id/guide_activity_pb"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp" />
 
-        <Button
-            android:id="@+id/guide_activity_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/open"
-            android:background="@color/open_btn_color"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            />
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:id="@+id/guide_activity_pb"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/guide_activity_pb"
-            android:text="@string/scanning"
-            android:layout_centerInParent="true"
-            android:id="@+id/guide_activity_tv"
-            android:visibility="gone"/>
-    </RelativeLayout>
-</LinearLayout>
+    <Button
+        android:id="@+id/guide_activity_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/circle_button"
+        android:text="Go"
+        android:visibility="gone" />
+
+</RelativeLayout>

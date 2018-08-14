@@ -1,5 +1,6 @@
 package com.example.sure.photomanager.Activity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,14 +8,17 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.sure.photomanager.R;
 
 import org.litepal.LitePal;
+import org.litepal.crud.callback.UpdateOrDeleteCallback;
 
 import java.util.List;
 
 import adapter.PrivateAdapter;
+import bean.Password;
 import bean.PrivatePhoto;
 
 public class PrivateActivity extends AppCompatActivity {
@@ -22,6 +26,7 @@ public class PrivateActivity extends AppCompatActivity {
     private List<PrivatePhoto> mList;
     private PrivateAdapter mAdapter;
     private ImageView mBackImage;
+    private TextView mSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,8 @@ public class PrivateActivity extends AppCompatActivity {
             mRv.setAdapter(mAdapter);
             mRv.setLayoutManager(mLayoutManager);
         }
+
+        mSetting = findViewById(R.id.private_activity_setting);
     }
 
     public void setListener() {
@@ -48,6 +55,19 @@ public class PrivateActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        mSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LitePal.deleteAllAsync(Password.class).listen(new UpdateOrDeleteCallback() {
+                    @Override
+                    public void onFinish(int rowsAffected) {
+                        Intent intent = new Intent(PrivateActivity.this, PrivatePasswordActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
             }
         });
     }

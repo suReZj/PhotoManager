@@ -44,7 +44,6 @@ public class GuideActivity extends AppCompatActivity {
     private String mSystemAlbum = "DCIM/Camera";
     private String mSystemPath = null;
     private Button mBtn;
-    private TextView mTv;
     private ProgressBar mPb;
     private String mSelfPath = "System/Photo";
     private String mSelfName = "系统相册";
@@ -56,7 +55,6 @@ public class GuideActivity extends AppCompatActivity {
         setContentView(R.layout.guide_activity);
         mBtn = findViewById(R.id.guide_activity_btn);
         mPb = findViewById(R.id.guide_activity_pb);
-        mTv = findViewById(R.id.guide_activity_tv);
         mBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,7 +124,8 @@ public class GuideActivity extends AppCompatActivity {
                     while (mCursor.moveToNext()) {
                         // 获取图片的路径
                         String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                        int size = mCursor.getInt(mCursor.getColumnIndex(MediaStore.Images.Media.SIZE)) / 1024;
+//                        int size = mCursor.getInt(mCursor.getColumnIndex(MediaStore.Images.Media.SIZE)) / 1024;
+                        int size = (int) ( mCursor.getInt(mCursor.getColumnIndex(MediaStore.Images.Media.SIZE))/1024);
                         String displayName = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
                         // 获取该图片的父路径名
                         String dirPath = new File(path).getParentFile().getAbsolutePath();
@@ -192,9 +191,7 @@ public class GuideActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mBtn.setBackground(getResources().getDrawable(R.color.open_btn_color));
                         mPb.setVisibility(View.GONE);
-                        mTv.setText("");
                         mBtn.setVisibility(View.VISIBLE);
                         Log.e("Photo Count=========", LitePal.findAll(Photo.class).size() + "");
                         Log.e("Album Count=========", LitePal.findAll(Album.class).size() + "");

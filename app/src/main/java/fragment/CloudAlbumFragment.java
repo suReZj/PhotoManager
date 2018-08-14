@@ -11,9 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.sure.photomanager.Activity.LoginActivity;
+import com.example.sure.photomanager.Activity.SubscriptionActivity;
 import com.example.sure.photomanager.R;
 
 import org.greenrobot.eventbus.EventBus;
@@ -27,8 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.FragmentAdapter;
+import bean.UploadPhoto;
 import bean.User;
+import event.HideTopEvent;
 import event.LoginEvent;
+import event.UploadEvent;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -48,6 +55,12 @@ public class CloudAlbumFragment extends Fragment {
     private Button mLoginBtn;
     private Button mExpandBtn;
     private TextView mNameText;
+    private LinearLayout mLayout;
+    private ImageView mIcon;
+    private ProgressBar mPb;
+    private List<UploadPhoto> mList;
+    private int mSize;
+    private TextView mSizeTv;
 
     public CloudAlbumFragment() {
     }
@@ -74,6 +87,13 @@ public class CloudAlbumFragment extends Fragment {
         mLoginBtn = view.findViewById(R.id.cloud_fragment_login_btn);
         mExpandBtn = view.findViewById(R.id.cloud_fragment_expand);
         mNameText = view.findViewById(R.id.cloud_fragment_clickTv);
+        mLayout = view.findViewById(R.id.cloud_fragment_layout);
+        mIcon = view.findViewById(R.id.cloud_fragment_icon);
+        mPb = view.findViewById(R.id.cloud_fragment_progressBar);
+        mSizeTv = view.findViewById(R.id.cloud_fragment_xxxM);
+
+        setProgress();
+
         mViewPager.setAdapter(mAdapter);
         mTablayout.setupWithViewPager(mViewPager);
         setListener();
@@ -92,12 +112,8 @@ public class CloudAlbumFragment extends Fragment {
         mExpandBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LitePal.deleteAllAsync(User.class).listen(new UpdateOrDeleteCallback() {
-                    @Override
-                    public void onFinish(int rowsAffected) {
-                        refresh();
-                    }
-                });
+                Intent intent=new Intent(getContext(), SubscriptionActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -108,9 +124,44 @@ public class CloudAlbumFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
+    public void setProgress() {
+        List<User> user = LitePal.findAll(User.class);
+        mSize = 0;
+        if (user.size() > 0) {
+            mList = LitePal.where("mPhone = ?", user.get(0).getmPhone()).order("mDate desc").find(UploadPhoto.class);
+            for (int i = 0; i < mList.size(); i++) {
+                mSize = mSize + (int) (mList.get(i).getmSize() / 1024);
+            }
+            mPb.setProgress(mSize);
+            mSizeTv.setText(mSize + getString(R.string.space_size));
+        } else {
+            mSizeTv.setText("0" + getString(R.string.space_size));
+            mPb.setProgress(0);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(UploadEvent event) {
+        setProgress();
+        mMyCloudFragment.changeData();
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(LoginEvent event) {
         refresh();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(HideTopEvent event) {
+        if (event.ismIsHide()) {
+            mIcon.setVisibility(View.GONE);
+            mLayout.setVisibility(View.GONE);
+            mExpandBtn.setVisibility(View.GONE);
+        } else {
+            mIcon.setVisibility(View.VISIBLE);
+            mLayout.setVisibility(View.VISIBLE);
+            mExpandBtn.setVisibility(View.VISIBLE);
+        }
     }
 
     public void refresh() {
@@ -119,14 +170,31 @@ public class CloudAlbumFragment extends Fragment {
             mLoginBtn.setVisibility(View.VISIBLE);
             mTablayout.setVisibility(View.GONE);
             mViewPager.setVisibility(View.GONE);
-            mExpandBtn.setVisibility(View.GONE);
+//            mExpandBtn.setVisibility(View.GONE);
             mNameText.setText(getString(R.string.clickToLogin));
+            setProgress();
         } else {
             mLoginBtn.setVisibility(View.GONE);
             mTablayout.setVisibility(View.VISIBLE);
             mViewPager.setVisibility(View.VISIBLE);
-            mExpandBtn.setVisibility(View.VISIBLE);
+//            mExpandBtn.setVisibility(View.VISIBLE);
             mNameText.setText(list.get(0).getmPhone());
+            mMyCloudFragment.changeData();
+            setProgress();
         }
+    }
+
+    public void deleteImage() {
+        mMyCloudFragment.deleteImage();
+//        setProgress();
+    }
+
+
+    public boolean getIsSelected() {
+        return mMyCloudFragment.getIsSelected();
+    }
+
+    public void cancelSelected() {
+        mMyCloudFragment.cancelSelected();
     }
 }

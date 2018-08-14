@@ -287,7 +287,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Guangzhou"
+                        android:text="Beijing"
                         android:layout_below="@id/intelligent_fragment_bj_image"
                         android:textStyle="bold"
                         android:id="@+id/intelligent_fragment_bj_name"

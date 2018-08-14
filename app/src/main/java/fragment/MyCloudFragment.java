@@ -20,11 +20,13 @@ import java.util.List;
 
 import adapter.CloudPhotoAdapter;
 import bean.UploadPhoto;
+import bean.User;
 
 public class MyCloudFragment extends Fragment {
     private RecyclerView mRv;
     private List<UploadPhoto> mList;
     private CloudPhotoAdapter mAdapter;
+    private int mSize;
 
     public MyCloudFragment() {
     }
@@ -32,8 +34,13 @@ public class MyCloudFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mList = LitePal.findAll(UploadPhoto.class);
-        EventBus.getDefault().register(this);
+        List<User> user = LitePal.findAll(User.class);
+        mList = LitePal.where("mPhone = ?", user.get(0).getmPhone()).order("mDate desc").find(UploadPhoto.class);
+        for (int i = 0; i < mList.size(); i++) {
+            mSize = mSize + (int) (mList.get(i).getmSize() / 1024);
+        }
+
+//        EventBus.getDefault().register(this);
     }
 
     @Nullable
@@ -42,22 +49,59 @@ public class MyCloudFragment extends Fragment {
         View view = inflater.inflate(R.layout.my_cloud_fragment, null);
         mRv = view.findViewById(R.id.my_cloud_fragment_rv);
 
-        mAdapter = new CloudPhotoAdapter(mList);
+
         RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        mAdapter = new CloudPhotoAdapter(mList);
         mRv.setAdapter(mAdapter);
         mRv.setLayoutManager(mLayoutManager);
+
+        mAdapter.setOnItemClickLitener(new CloudPhotoAdapter.OnItemClickLitener() {
+            @Override
+            public void onItemClick(CloudPhotoAdapter.ViewHolder view, int index) {
+
+            }
+
+            @Override
+            public void onItemLongClick(CloudPhotoAdapter.ViewHolder view, int index) {
+
+            }
+        });
         return view;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+//        EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void Event(UploadPhoto event) {
-        mList = LitePal.findAll(UploadPhoto.class);
-        mAdapter.notifyDataSetChanged();
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void Event(UploadPhoto event) {
+//        mAdapter.changeData();
+//    }
+
+    public void changeData() {
+        if (mAdapter != null) {
+            mAdapter.changeData();
+        }
+    }
+
+    public void deleteImage() {
+        mAdapter.deleteImage();
+    }
+
+    public int getmSize() {
+        return mSize;
+    }
+
+    public boolean getIsSelected() {
+        if(mAdapter!=null){
+            return mAdapter.getIsSelected();
+        }
+        return false;
+    }
+
+    public void cancelSelected() {
+        mAdapter.cancelSelected();
     }
 }

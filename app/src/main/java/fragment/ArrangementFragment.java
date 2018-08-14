@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,10 +49,9 @@ public class ArrangementFragment extends Fragment {
         mRv = view.findViewById(R.id.arrangement_fragment_rv);
 
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRv.setLayoutManager(linearLayoutManager);
-        mRv.addItemDecoration(new MyDecorationUtil(getContext(), MyDecorationUtil.VERTICAL_LIST, R.drawable.activity_recyclerview_divider));
+        RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        mRv.setLayoutManager(mLayoutManager);
+//        mRv.addItemDecoration(new MyDecorationUtil(getContext(), MyDecorationUtil.VERTICAL_LIST, R.drawable.activity_recyclerview_divider));
         getData();
         return view;
     }

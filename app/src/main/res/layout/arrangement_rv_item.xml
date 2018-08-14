@@ -1,34 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<?xml version="1.0" encoding="utf-8"?><!--<RelativeLayout--><!--xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:id="@+id/arrangement_rv_item_layout">--><!--<ImageView--><!--android:layout_width="80dp"--><!--android:layout_height="80dp"--><!--android:layout_alignParentLeft="true"--><!--android:layout_marginHorizontal="10dp"--><!--android:id="@+id/arrangement_rv_item_image"--><!--android:src="@mipmap/ic_launcher"--><!--android:layout_marginVertical="10dp"/>--><!--<TextView--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:text="自拍"--><!--android:textSize="20sp"--><!--android:layout_centerVertical="true"--><!--android:layout_toRightOf="@id/arrangement_rv_item_image"--><!--android:textStyle="bold"--><!--android:id="@+id/arrangement_rv_item_name"--><!--/>--><!--<TextView--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_centerVertical="true"--><!--android:layout_alignParentRight="true"--><!--android:layout_marginRight="10dp"--><!--android:text="100"--><!--android:textSize="20sp"--><!--android:textStyle="bold"--><!--android:id="@+id/arrangement_rv_item_sum"/>--><!--</RelativeLayout>-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_columnWeight="1"
+    android:orientation="vertical"
     android:id="@+id/arrangement_rv_item_layout">
-<ImageView
-    android:layout_width="80dp"
-    android:layout_height="80dp"
-    android:layout_alignParentLeft="true"
-    android:layout_marginHorizontal="10dp"
-    android:id="@+id/arrangement_rv_item_image"
-    android:src="@mipmap/ic_launcher"
-    android:layout_marginVertical="10dp"/>
+
+    <ImageView
+        android:id="@+id/arrangement_rv_item_image"
+        android:layout_width="160dp"
+        android:layout_height="110dp"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/pic_plants"
+        android:scaleType="fitXY"/>
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="自拍"
-        android:textSize="20sp"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/arrangement_rv_item_image"
-        android:textStyle="bold"
         android:id="@+id/arrangement_rv_item_name"
-        />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/arrangement_rv_item_image"
+        android:layout_below="@id/arrangement_rv_item_image"
+        android:layout_marginTop="10dp"
+        android:text="Plants"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:text="100"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:id="@+id/arrangement_rv_item_sum"/>
+        android:layout_alignLeft="@id/arrangement_rv_item_name"
+        android:layout_below="@id/arrangement_rv_item_name"
+        android:text="60"
+        android:id="@+id/arrangement_rv_item_sum"
+        android:layout_marginBottom="10dp"/>
 </RelativeLayout>

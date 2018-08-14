@@ -9,7 +9,8 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_margin="10dp"
-        android:src="@mipmap/logo" />
+        android:src="@mipmap/logo"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -18,6 +19,7 @@
         android:layout_toRightOf="@id/cloud_fragment_icon"
         android:orientation="vertical"
         android:id="@+id/cloud_fragment_layout"
+
         >
 
         <TextView
@@ -37,7 +39,7 @@
             android:layout_below="@id/cloud_fragment_clickTv"
             android:layout_toRightOf="@id/cloud_fragment_icon"
             android:layout_weight="1"
-            android:text="0M/500M"
+            android:text="@string/space_size"
             android:textSize="12sp" />
 
         <ProgressBar
@@ -81,7 +83,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login_or_register"
+        android:text="@string/click_login"
         android:layout_centerInParent="true"
         android:background="@drawable/circle_button"
         android:id="@+id/cloud_fragment_login_btn"/>

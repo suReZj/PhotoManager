@@ -15,6 +15,8 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.nanchen.compresshelper.CompressHelper;
+
 import org.greenrobot.eventbus.EventBus;
 import org.litepal.LitePal;
 
@@ -40,7 +42,8 @@ public class FileUtil {
         for (int j = 0; j < buildFile.size(); j++) {
             for (int i = 0; i < list.size(); i++) {
                 String url = list.get(i);
-                final Bitmap bitmap = BitmapFactory.decodeFile(url);
+                final Bitmap bitmap = CompressHelper.getDefault(context).compressToBitmap(new File(url));
+//                final Bitmap bitmap = BitmapFactory.decodeFile(url);
                 String path = url;//原地址
                 int index = url.lastIndexOf("/");
                 url = url.substring(index + 1, url.length());
@@ -59,6 +62,33 @@ public class FileUtil {
                 newPhoto.updateAll("mLocalPath = ?", path);
 
 
+
+                List<ArrangementAlbum> mList = LitePal.where("name = ?", buildFile.get(j)).find(ArrangementAlbum.class);
+                if (mList.size() == 0) {
+                    ArrangementAlbum album = new ArrangementAlbum();
+                    album.setName(buildFile.get(j));
+                    album.setSum(1);
+                    List<String> photoList = new ArrayList<>();
+//                    Photo photo = LitePal.where("mLocalPath = ?", savePath).find(Photo.class).get(0);
+                    photoList.add(savePath);
+                    album.setmList(photoList);
+                    album.save();
+                } else {
+                    ArrangementAlbum album = new ArrangementAlbum();
+                    List<String> list1 = mList.get(0).getmList();
+                    List<String> list2 = new ArrayList<>();
+                    list2.add(savePath);
+                    list2.addAll(list1);
+//                        list1.add(savePath);
+//                        album.setmList(list1);
+                    album.setmList(list2);
+                    album.setSum(mList.get(0).getSum() + 1);
+                    album.updateAll("name = ?", buildFile.get(j));
+                }
+
+
+                EventBus.getDefault().post(new RefreshData());
+
                 try {
                     final FileOutputStream fos = new FileOutputStream(file);
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
@@ -72,32 +102,10 @@ public class FileUtil {
                 } finally {
                     // 最后通知图库更新
                     context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + savePath)));
-
-                    List<ArrangementAlbum> mList = LitePal.where("name = ?", buildFile.get(j)).find(ArrangementAlbum.class);
-                    if (mList.size() == 0) {
-                        ArrangementAlbum album = new ArrangementAlbum();
-                        album.setName(buildFile.get(j));
-                        album.setSum(1);
-                        List<String> photoList = new ArrayList<>();
-//                    Photo photo = LitePal.where("mLocalPath = ?", savePath).find(Photo.class).get(0);
-                        photoList.add(savePath);
-                        album.setmList(photoList);
-                        album.save();
-                    } else {
-                        ArrangementAlbum album = new ArrangementAlbum();
-                        List<String> list1 = mList.get(0).getmList();
-                        List<String> list2 = new ArrayList<>();
-                        list2.add(savePath);
-                        list2.addAll(list1);
-//                        list1.add(savePath);
-//                        album.setmList(list1);
-                        album.setmList(list2);
-                        album.setSum(mList.get(0).getSum() + 1);
-                        album.updateAll("name = ?", buildFile.get(j));
-                    }
                 }
             }
         }
+
         for (int y = 0; y < list.size(); y++) {
             Uri tempUri;
             File mfile = new File(list.get(y));
@@ -110,7 +118,7 @@ public class FileUtil {
             }
             deleteImage(list.get(y), tempUri, context);
         }
-        EventBus.getDefault().post(new RefreshData());
+
 //            }
 //        }).run();
 

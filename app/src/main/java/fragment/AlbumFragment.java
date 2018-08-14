@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.sure.photomanager.R;
 
@@ -91,6 +92,7 @@ public class AlbumFragment extends Fragment {
     public void refreshData() {
         mList = LitePal.where("mLocalPath like ?", "%" + mSystemPath + "%").order("mDate desc").find(Photo.class);
         mAdapter.refreshData(mList);
+        Toast.makeText(getContext(),"successfully deleted",Toast.LENGTH_SHORT).show();
     }
 
     public boolean getIsSelected() {

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -37,6 +38,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.sure.photomanager.R;
+import com.google.gson.Gson;
 import com.nanchen.compresshelper.CompressHelper;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.GridHolder;
@@ -61,16 +63,21 @@ import java.util.Map;
 
 import adapter.DialogAdapter;
 import bean.ArrangementAlbum;
+import bean.Password;
 import bean.Photo;
 import bean.PrivatePhoto;
+import bean.UploadPhoto;
+import bean.User;
 import event.LoginEvent;
 import event.RefreshData;
 import event.ShowImageEvent;
 import event.ShowToolbarEvent;
+import event.UploadEvent;
 import fragment.CloudAlbumFragment;
 import fragment.HomeFragment;
 import fragment.IntelligentFragment;
 import fragment.PersonalFragment;
+import gson.RegisterAndLoginGson;
 import me.majiajie.pagerbottomtabstrip.NavigationController;
 import me.majiajie.pagerbottomtabstrip.PageNavigationView;
 import me.majiajie.pagerbottomtabstrip.item.BaseTabItem;
@@ -110,6 +117,32 @@ public class MainActivity extends AppCompatActivity {
     private Mydialog mDialog;
     private DialogPlus arrangeMentDialog;
     private MaterialDialog mLodingDiaolg;
+    private List<String> mSelectedList;
+    private static PageNavigationView mPageNavigationView1;
+    private NavigationController mNavigationController2;
+
+    Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    if (msg.arg1 < mSelectedList.size() - 1) {
+                        upLoadPhotoList(msg.arg1 + 1);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Successful upload", Toast.LENGTH_SHORT).show();
+                    }
+                    mHomeFragment.cancelSelected();
+                    break;
+                case 1:
+                    Toast.makeText(MainActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
+                    if (msg.arg1 < mSelectedList.size() - 1) {
+                        upLoadPhotoList(msg.arg1 + 1);
+                    }
+                    break;
+            }
+            return false;
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,14 +156,22 @@ public class MainActivity extends AppCompatActivity {
     public void initView() {
         mDialog = new Mydialog(this, R.style.BottomDialog);
         mBottomNavigationView = findViewById(R.id.main_activity_BNV);
+        mPageNavigationView1 = findViewById(R.id.tab1);
 
         mPageNavigationView = findViewById(R.id.tab);
+
 
         mNavigationController = mPageNavigationView.custom()
                 .addItem(newItem(R.mipmap.ic_upload, R.mipmap.ic_upload))
                 .addItem(newItem(R.mipmap.ic_lock, R.mipmap.ic_lock))
                 .addItem(newRoundItem(R.mipmap.ic_addto, R.mipmap.ic_addto, ""))
                 .addItem(newItem(R.mipmap.ic_share, R.mipmap.ic_share))
+                .addItem(newItem(R.mipmap.ic_delete, R.mipmap.ic_delete))
+                .build();
+
+        mNavigationController2 = mPageNavigationView1.custom()
+                .addItem(newItem(R.mipmap.ic_share, R.mipmap.ic_share))
+                .addItem(newRoundItem(R.mipmap.download_cloud, R.mipmap.download_cloud, ""))
                 .addItem(newItem(R.mipmap.ic_delete, R.mipmap.ic_delete))
                 .build();
 
@@ -217,7 +258,18 @@ public class MainActivity extends AppCompatActivity {
             public void onSelected(int index, int old) {
                 switch (index) {
                     case 0:
-                        upLoadImage(mHomeFragment.getSelectPhotoList().get(0));
+                        List<User> list = LitePal.findAll(User.class);
+                        if (list.size() == 0) {
+                            Toast.makeText(MainActivity.this, "Please Login", Toast.LENGTH_SHORT).show();
+                        } else {
+//                            List<String> pathList = mHomeFragment.getSelectPhotoList();
+//                            for (int i = 0; i < list.size(); i++) {
+//                                upLoadPhoto(pathList.get(i));
+//                            }
+                            mSelectedList = mHomeFragment.getSelectPhotoList();
+                            upLoadPhotoList(0);
+                            mPersonalFragment.setProgress();
+                        }
                         break;
                     case 1:
                         lockPhoto(mHomeFragment.getSelectPhotoList());
@@ -255,7 +307,19 @@ public class MainActivity extends AppCompatActivity {
             public void onRepeat(int index) {
                 switch (index) {
                     case 0:
-                        upLoadImage(mHomeFragment.getSelectPhotoList().get(0));
+                        List<User> list = LitePal.findAll(User.class);
+                        if (list.size() == 0) {
+                            Toast.makeText(MainActivity.this, "Please Login", Toast.LENGTH_SHORT).show();
+                        } else {
+                            List<String> pathList = mHomeFragment.getSelectPhotoList();
+//                            for (int i = 0; i < list.size(); i++) {
+//                                upLoadPhoto(pathList.get(i));
+//                            }
+                            mSelectedList = mHomeFragment.getSelectPhotoList();
+                            upLoadPhotoList(0);
+                            mPersonalFragment.setProgress();
+                        }
+
                         break;
                     case 1:
                         lockPhoto(mHomeFragment.getSelectPhotoList());
@@ -279,6 +343,40 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         }).run();
+                        break;
+                }
+            }
+        });
+
+        mNavigationController2.addTabItemSelectedListener(new OnTabItemSelectedListener() {
+            @Override
+            public void onSelected(int index, int old) {
+                switch (index) {
+                    case 0:
+                        showShare();
+                        break;
+                    case 1:
+                        Toast.makeText(MainActivity.this, "Download successful", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        mCloudAlbumFragment.deleteImage();
+                        EventBus.getDefault().post(new LoginEvent());
+                        break;
+                }
+            }
+
+            @Override
+            public void onRepeat(int index) {
+                switch (index) {
+                    case 0:
+                        showShare();
+                        break;
+                    case 1:
+                        Toast.makeText(MainActivity.this, "Download successful", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        mCloudAlbumFragment.deleteImage();
+                        EventBus.getDefault().post(new LoginEvent());
                         break;
                 }
             }
@@ -314,6 +412,16 @@ public class MainActivity extends AppCompatActivity {
         mPageNavigationView.setVisibility(View.GONE);
         mBottomNavigationView.setVisibility(View.VISIBLE);
         EventBus.getDefault().post(new ShowToolbarEvent(false));
+    }
+
+    public static void showBottom(boolean flag) {
+        if (flag) {
+            mPageNavigationView1.setVisibility(View.VISIBLE);
+            mBottomNavigationView.setVisibility(View.GONE);
+        } else {
+            mPageNavigationView1.setVisibility(View.GONE);
+            mBottomNavigationView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -528,73 +636,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void upLoadImage(String path) {
-        OkHttpClient mOkHttpClent = new OkHttpClient();
-        File file = new File(path);
-        Log.e("oldName", file.getName());
-        File newFile = CompressHelper.getDefault(this).compressToFile(file);
-        Log.e("NewName", newFile.getName());
-
-        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        RequestBody body = RequestBody.create(MediaType.parse("image/*"), newFile);
-        String filename = file.getName();
-        // 参数分别为， 请求key ，文件名称 ， RequestBody
-        requestBody.addFormDataPart("file", filename, body);
-
-        Request request = new Request.Builder().url("http://www.ligohan.com:8080/springboot-security-demo/api/file/upload").post(requestBody.build()).build();
-
-
-
-        Call call = mOkHttpClent.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e("faile", "onFailure: " + e);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, "失败", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.e("success", "成功" + response);
-                Log.e("success", "成功" + response.body().string());
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, "成功", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-
-    }
-
     public void lockPhoto(final List<String> photo) {
-        PrivatePhoto privatePhoto;
-        Photo photo1;
+        List<Password> mPassword = LitePal.findAll(Password.class);
+        if (mPassword.size() == 0) {
+            Intent intent = new Intent(MainActivity.this, PrivatePasswordActivity.class);
+            startActivity(intent);
+        } else {
+            PrivatePhoto privatePhoto;
+            Photo photo1;
 
-        for (int i = 0; i < photo.size(); i++) {
-            photo1 = LitePal.where("mLocalPath = ?", photo.get(i)).find(Photo.class).get(0);
-            File file = new File(photo1.getmLocalPath());
-            File newFile = CompressHelper.getDefault(this).compressToFile(file);
-            byte[] byt = Bitmap2Bytes(BitmapFactory.decodeFile(newFile.getAbsolutePath()));
-            privatePhoto = new PrivatePhoto(photo1, byt);
+            for (int i = 0; i < photo.size(); i++) {
+                photo1 = LitePal.where("mLocalPath = ?", photo.get(i)).find(Photo.class).get(0);
+                File file = new File(photo1.getmLocalPath());
+                File newFile = CompressHelper.getDefault(this).compressToFile(file);
+                byte[] byt = Bitmap2Bytes(BitmapFactory.decodeFile(newFile.getAbsolutePath()));
+                privatePhoto = new PrivatePhoto(photo1, byt);
 //            privatePhoto = new PrivatePhoto(photo1, null);
-            privatePhoto.save();
-            photo1.delete();
-        }
-
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                FileUtil.privateImage(photo, MainActivity.this);
+                privatePhoto.save();
+                photo1.delete();
             }
-        }).run();
+
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FileUtil.privateImage(photo, MainActivity.this);
+                }
+            }).run();
+        }
     }
 
     public byte[] Bitmap2Bytes(Bitmap bm) {
@@ -607,8 +676,73 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (mHomeFragment.getIsSelected()) {
             mHomeFragment.cancelSelected();
+        } else if (mCloudAlbumFragment.getIsSelected()) {
+            mCloudAlbumFragment.cancelSelected();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    public void upLoadPhotoList(final int index) {
+        List<UploadPhoto> uploadList = LitePal.where("originalPath = ?", mSelectedList.get(index)).find(UploadPhoto.class);
+        if (uploadList.size() > 0) {
+            Message msg = handler.obtainMessage();
+            msg.what = 0;
+            msg.arg1 = index;
+            handler.sendMessage(msg);
+            EventBus.getDefault().post(new UploadEvent());
+        } else {
+            final List<User> list = LitePal.findAll(User.class);
+            final List<Photo> photo = LitePal.where("mLocalPath = ?", mSelectedList.get(index)).find(Photo.class);
+            OkHttpClient mOkHttpClent = new OkHttpClient();
+            File file = new File(mSelectedList.get(index));
+            Log.e("oldName", file.getName());
+            File newFile = CompressHelper.getDefault(this).compressToFile(file);
+            Log.e("NewName", newFile.getName());
+
+            MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+            RequestBody body = RequestBody.create(MediaType.parse("image/*"), newFile);
+            final String filename = file.getName();
+            // 参数分别为， 请求key ，文件名称 ， RequestBody
+            requestBody.addFormDataPart("file", filename, body);
+
+            Request request = new Request.Builder().url("http://www.ligohan.com:8080/springboot-security-demo/api/file/upload").post(requestBody.build()).build();
+
+
+            Call call = mOkHttpClent.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("faile", "onFailure: " + e);
+                    Message msg = handler.obtainMessage();
+                    msg.what = 1;
+                    msg.arg1 = index;
+                    handler.sendMessage(msg);
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    Log.e("success", "成功" + response);
+                    Gson gson = new Gson();
+                    RegisterAndLoginGson registerAndLoginGson = gson.fromJson(response.body().string(), RegisterAndLoginGson.class);
+                    if (registerAndLoginGson.isIs_success()) {
+                        UploadPhoto uploadPhoto = new UploadPhoto("http://www.ligohan.com:8080/springboot-security-demo/api/file/download?fileName=" + filename, list.get(0).getmPhone(), photo.get(0));
+                        uploadPhoto.save();
+                        Message msg = handler.obtainMessage();
+                        msg.what = 0;
+                        msg.arg1 = index;
+                        handler.sendMessage(msg);
+                        EventBus.getDefault().post(new UploadEvent());
+                        EventBus.getDefault().post(new LoginEvent());
+                    } else {
+                        Message msg = handler.obtainMessage();
+                        msg.what = 1;
+                        msg.arg1 = index;
+                        handler.sendMessage(msg);
+                    }
+
+                }
+            });
         }
     }
 }

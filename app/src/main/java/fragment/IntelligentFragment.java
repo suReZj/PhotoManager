@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.sure.photomanager.Activity.SearchActivity;
@@ -17,6 +18,7 @@ import com.example.sure.photomanager.R;
 
 public class IntelligentFragment extends Fragment {
     private TextView mSearchTv;
+    private ImageView mImage;
 
     public IntelligentFragment() {
     }
@@ -30,6 +32,14 @@ public class IntelligentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.intelligent_fragment, null);
+        mImage = view.findViewById(R.id.intelligent_fragment_search);
+        mImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), SearchActivity.class);
+                startActivity(intent);
+            }
+        });
 //        mSearchTv.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
