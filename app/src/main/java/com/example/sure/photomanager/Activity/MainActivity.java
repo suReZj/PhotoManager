@@ -66,6 +66,7 @@ import bean.ArrangementAlbum;
 import bean.Password;
 import bean.Photo;
 import bean.PrivatePhoto;
+import bean.SortPhoto;
 import bean.UploadPhoto;
 import bean.User;
 import event.LoginEvent;
@@ -287,18 +288,67 @@ public class MainActivity extends AppCompatActivity {
                         showShare();
                         break;
                     case 4:
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    List<String> list = new ArrayList<>();
-                                    list.add("delete");
-                                    FileUtil.catchStreamToFile(mHomeFragment.getSelectPhotoList(), list, MainActivity.this);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }).run();
+//                        new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//
+//                                try {
+//                                    List<String> list1 = new ArrayList<>();
+//                                    list1.add("delete");
+//
+//
+//                                    List<String> newList = mHomeFragment.getSelectPhotoList();
+//                                    for (int j = 0; j < list1.size(); j++) {
+//                                        for (int i = 0; i < mHomeFragment.getSelectPhotoList().size(); i++) {
+//                                            String url = mHomeFragment.getSelectPhotoList().get(i);
+//                                            String path = url;//原地址
+//                                            int index1 = url.lastIndexOf("/");
+//                                            url = url.substring(index1 + 1, url.length());
+//                                            String savePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+//                                                    + "/photoManager/" + "/" + list1 + "/" + url;
+//                                            Photo newPhoto = new Photo();
+//                                            newPhoto.setmLocalPath(savePath);
+//                                            newPhoto.updateAll("mLocalPath = ?", path);
+//                                            List<ArrangementAlbum> mList = LitePal.where("name = ?", list1.get(j)).find(ArrangementAlbum.class);
+//                                            if (mList.size() == 0) {
+//                                                ArrangementAlbum album = new ArrangementAlbum();
+//                                                album.setName(list1.get(j));
+//                                                album.setSum(1);
+//                                                List<String> photoList = new ArrayList<>();
+////                    Photo photo = LitePal.where("mLocalPath = ?", savePath).find(Photo.class).get(0);
+//                                                photoList.add(savePath);
+//                                                album.setmList(photoList);
+//                                                album.save();
+//                                            } else {
+//                                                ArrangementAlbum album = new ArrangementAlbum();
+//                                                List<String> list3 = mList.get(0).getmList();
+//                                                List<String> list2 = new ArrayList<>();
+//                                                list2.add(savePath);
+//                                                list2.addAll(list3);
+////                        list1.add(savePath);
+////                        album.setmList(list1);
+//                                                album.setmList(list2);
+//                                                album.setSum(mList.get(0).getSum() + 1);
+//                                                album.updateAll("name = ?", list1.get(j));
+//                                            }
+//                                            newList.set(i, savePath);
+//                                        }
+//                                        EventBus.getDefault().post(new RefreshData());
+//                                    }
+//
+//
+//                                    FileUtil.catchStreamToFile(mHomeFragment.getSelectPhotoList(), list1, MainActivity.this);
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }).run();
+
+
+                        List<String> list1 = new ArrayList<>();
+                        list1.add("delete");
+                        sortPhoto(mHomeFragment.getSelectPhotoList(),list1);
+
                         break;
                 }
             }
@@ -331,18 +381,66 @@ public class MainActivity extends AppCompatActivity {
                         showShare();
                         break;
                     case 4:
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    List<String> list = new ArrayList<>();
-                                    list.add("delete");
-                                    FileUtil.catchStreamToFile(mHomeFragment.getSelectPhotoList(), list, MainActivity.this);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }).run();
+//                        new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//
+//                                try {
+//                                    List<String> list1 = new ArrayList<>();
+//                                    list1.add("delete");
+//
+//
+//                                    List<String> newList = mHomeFragment.getSelectPhotoList();
+//                                    for (int j = 0; j < list1.size(); j++) {
+//                                        for (int i = 0; i < mHomeFragment.getSelectPhotoList().size(); i++) {
+//                                            String url = mHomeFragment.getSelectPhotoList().get(i);
+//                                            String path = url;//原地址
+//                                            int index1 = url.lastIndexOf("/");
+//                                            url = url.substring(index1 + 1, url.length());
+//                                            String savePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+//                                                    + "/photoManager/" + "/" + list1 + "/" + url;
+//                                            Photo newPhoto = new Photo();
+//                                            newPhoto.setmLocalPath(savePath);
+//                                            newPhoto.updateAll("mLocalPath = ?", path);
+//                                            List<ArrangementAlbum> mList = LitePal.where("name = ?", list1.get(j)).find(ArrangementAlbum.class);
+//                                            if (mList.size() == 0) {
+//                                                ArrangementAlbum album = new ArrangementAlbum();
+//                                                album.setName(list1.get(j));
+//                                                album.setSum(1);
+//                                                List<String> photoList = new ArrayList<>();
+////                    Photo photo = LitePal.where("mLocalPath = ?", savePath).find(Photo.class).get(0);
+//                                                photoList.add(savePath);
+//                                                album.setmList(photoList);
+//                                                album.save();
+//                                            } else {
+//                                                ArrangementAlbum album = new ArrangementAlbum();
+//                                                List<String> list3 = mList.get(0).getmList();
+//                                                List<String> list2 = new ArrayList<>();
+//                                                list2.add(savePath);
+//                                                list2.addAll(list3);
+////                        list1.add(savePath);
+////                        album.setmList(list1);
+//                                                album.setmList(list2);
+//                                                album.setSum(mList.get(0).getSum() + 1);
+//                                                album.updateAll("name = ?", list1.get(j));
+//                                            }
+//                                            newList.set(i, savePath);
+//                                        }
+//                                        EventBus.getDefault().post(new RefreshData());
+//                                    }
+//
+//
+//                                    FileUtil.catchStreamToFile(mHomeFragment.getSelectPhotoList(), list1, MainActivity.this);
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }).run();
+
+                        List<String> list1 = new ArrayList<>();
+                        list1.add("delete");
+                        sortPhoto(mHomeFragment.getSelectPhotoList(),list1);
+
                         break;
                 }
             }
@@ -665,6 +763,81 @@ public class MainActivity extends AppCompatActivity {
             }).run();
         }
     }
+
+
+    public void sortPhoto(final List<String> photo, List<String> albumList) {
+
+        SortPhoto sortPhoto;
+        Photo photo1;
+//        for (int j = 0; j < albumList.size(); j++) {
+//            for (int i = 0; i < photo.size(); i++) {
+//                photo1 = LitePal.where("mLocalPath = ?", photo.get(i)).find(Photo.class).get(0);
+//                File file = new File(photo1.getmLocalPath());
+//                File newFile = CompressHelper.getDefault(this).compressToFile(file);
+//                byte[] byt = Bitmap2Bytes(BitmapFactory.decodeFile(newFile.getAbsolutePath()));
+//                sortPhoto = new SortPhoto(photo1, byt);
+////            privatePhoto = new PrivatePhoto(photo1, null);
+//                sortPhoto.save();
+//                photo1.delete();
+//            }
+//        }
+
+
+        for (int j = 0; j < albumList.size(); j++) {
+            for (int i = 0; i < photo.size(); i++) {
+                String url = photo.get(i);
+                String path = url;//原地址
+                int index1 = url.lastIndexOf("/");
+                url = url.substring(index1 + 1, url.length());
+                String savePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+                        + "/photoManager/" + "/" + albumList.get(j) + "/" + url;
+
+
+                Photo photo2 = LitePal.where("mLocalPath = ?", path).find(Photo.class).get(0);
+                File file = new File(photo2.getmLocalPath());
+                File newFile = CompressHelper.getDefault(this).compressToFile(file);
+                byte[] byt = Bitmap2Bytes(BitmapFactory.decodeFile(newFile.getAbsolutePath()));
+                sortPhoto = new SortPhoto(photo2, byt);
+                sortPhoto.setmLocalPath(savePath);
+//            privatePhoto = new PrivatePhoto(photo1, null);
+                sortPhoto.save();
+                photo2.delete();
+
+                List<ArrangementAlbum> mList = LitePal.where("name = ?", albumList.get(j)).find(ArrangementAlbum.class);
+                if (mList.size() == 0) {
+                    ArrangementAlbum album = new ArrangementAlbum();
+                    album.setName(albumList.get(j));
+                    album.setSum(1);
+                    List<String> photoList = new ArrayList<>();
+//                    Photo photo = LitePal.where("mLocalPath = ?", savePath).find(Photo.class).get(0);
+                    photoList.add(savePath);
+                    album.setmList(photoList);
+                    album.save();
+                } else {
+                    ArrangementAlbum album = new ArrangementAlbum();
+                    List<String> list3 = mList.get(0).getmList();
+                    List<String> list2 = new ArrayList<>();
+                    list2.add(savePath);
+                    list2.addAll(list3);
+//                        list1.add(savePath);
+//                        album.setmList(list1);
+                    album.setmList(list2);
+                    album.setSum(mList.get(0).getSum() + 1);
+                    album.updateAll("name = ?", albumList.get(j));
+                }
+            }
+            EventBus.getDefault().post(new RefreshData());
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                FileUtil.privateImage(photo, MainActivity.this);
+            }
+        }).run();
+
+    }
+
 
     public byte[] Bitmap2Bytes(Bitmap bm) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

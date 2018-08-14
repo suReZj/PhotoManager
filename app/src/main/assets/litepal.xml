@@ -39,6 +39,7 @@
         <mapping class="bean.Password" />
         <mapping class="bean.PrivatePhoto"/>
         <mapping class="bean.UploadPhoto"/>
+        <mapping class="bean.SortPhoto"/>
     </list>
 
     <!--

@@ -36,73 +36,77 @@ public class FileUtil {
 
     //将图片的InputStream转化为本地图片
     public static void catchStreamToFile(final List<String> list, final List<String> buildFile, final Context context) throws IOException {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
+
+
         for (int j = 0; j < buildFile.size(); j++) {
             for (int i = 0; i < list.size(); i++) {
-                String url = list.get(i);
-                final Bitmap bitmap = CompressHelper.getDefault(context).compressToBitmap(new File(url));
+                final int finalI = i;
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+                        String url = list.get(finalI);
+                        final Bitmap bitmap = CompressHelper.getDefault(context).compressToBitmap(new File(url));
 //                final Bitmap bitmap = BitmapFactory.decodeFile(url);
-                String path = url;//原地址
-                int index = url.lastIndexOf("/");
-                url = url.substring(index + 1, url.length());
-                String savePath = Environment.getExternalStorageDirectory().getAbsolutePath()
-                        + "/photoManager/" + "/" + buildFile + "/" + url;
+                        String path = url;//原地址
+                        int index = url.lastIndexOf("/");
+                        url = url.substring(index + 1, url.length());
+                        String savePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+                                + "/photoManager/" + "/" + buildFile + "/" + url;
 
-                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                        + "/photoManager/" + "/" + buildFile + "/" + url);
+                        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                                + "/photoManager/" + "/" + buildFile + "/" + url);
 
-                file.getParentFile().mkdirs();
+                        file.getParentFile().mkdirs();
+//
+//                Photo newPhoto = new Photo();
+//                newPhoto.setmLocalPath(savePath);
+//                newPhoto.updateAll("mLocalPath = ?", path);
+//
+//
+//
+//                List<ArrangementAlbum> mList = LitePal.where("name = ?", buildFile.get(j)).find(ArrangementAlbum.class);
+//                if (mList.size() == 0) {
+//                    ArrangementAlbum album = new ArrangementAlbum();
+//                    album.setName(buildFile.get(j));
+//                    album.setSum(1);
+//                    List<String> photoList = new ArrayList<>();
+////                    Photo photo = LitePal.where("mLocalPath = ?", savePath).find(Photo.class).get(0);
+//                    photoList.add(savePath);
+//                    album.setmList(photoList);
+//                    album.save();
+//                } else {
+//                    ArrangementAlbum album = new ArrangementAlbum();
+//                    List<String> list1 = mList.get(0).getmList();
+//                    List<String> list2 = new ArrayList<>();
+//                    list2.add(savePath);
+//                    list2.addAll(list1);
+////                        list1.add(savePath);
+////                        album.setmList(list1);
+//                    album.setmList(list2);
+//                    album.setSum(mList.get(0).getSum() + 1);
+//                    album.updateAll("name = ?", buildFile.get(j));
+//                }
+//
+//
+//                EventBus.getDefault().post(new RefreshData());
 
-//            Photo photo = LitePal.where("mLocalPath = ?", path).find(Photo.class).get(0);
-//            Photo newPhoto=new Photo(savePath,photo.getmSize(),photo.getmDisplayName(),photo.getmAlbumName(),photo.getmDate(),photo.getmLongitude(),photo.getmLatitude());
-                Photo newPhoto = new Photo();
-                newPhoto.setmLocalPath(savePath);
-                newPhoto.updateAll("mLocalPath = ?", path);
+                        try {
+                            final FileOutputStream fos = new FileOutputStream(file);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
 
+                            fos.flush();
+                            fos.close();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+                            // 最后通知图库更新
+                            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + savePath)));
+                        }
+//                    }
+//                }).run();
 
-
-                List<ArrangementAlbum> mList = LitePal.where("name = ?", buildFile.get(j)).find(ArrangementAlbum.class);
-                if (mList.size() == 0) {
-                    ArrangementAlbum album = new ArrangementAlbum();
-                    album.setName(buildFile.get(j));
-                    album.setSum(1);
-                    List<String> photoList = new ArrayList<>();
-//                    Photo photo = LitePal.where("mLocalPath = ?", savePath).find(Photo.class).get(0);
-                    photoList.add(savePath);
-                    album.setmList(photoList);
-                    album.save();
-                } else {
-                    ArrangementAlbum album = new ArrangementAlbum();
-                    List<String> list1 = mList.get(0).getmList();
-                    List<String> list2 = new ArrayList<>();
-                    list2.add(savePath);
-                    list2.addAll(list1);
-//                        list1.add(savePath);
-//                        album.setmList(list1);
-                    album.setmList(list2);
-                    album.setSum(mList.get(0).getSum() + 1);
-                    album.updateAll("name = ?", buildFile.get(j));
-                }
-
-
-                EventBus.getDefault().post(new RefreshData());
-
-                try {
-                    final FileOutputStream fos = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-
-                    fos.flush();
-                    fos.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    // 最后通知图库更新
-                    context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + savePath)));
-                }
             }
         }
 
@@ -119,8 +123,46 @@ public class FileUtil {
             deleteImage(list.get(y), tempUri, context);
         }
 
+
+//        for (int j = 0; j < buildFile.size(); j++) {
+//            for (int i = 0; i < list.size(); i++) {
+//                String url = list.get(i);
+//                String path = url;//原地址
+//                int index = url.lastIndexOf("/");
+//                url = url.substring(index + 1, url.length());
+//                String savePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+//                        + "/photoManager/" + "/" + buildFile + "/" + url;
+//                Photo newPhoto = new Photo();
+//                newPhoto.setmLocalPath(savePath);
+//                newPhoto.updateAll("mLocalPath = ?", path);
+//                List<ArrangementAlbum> mList = LitePal.where("name = ?", buildFile.get(j)).find(ArrangementAlbum.class);
+//                if (mList.size() == 0) {
+//                    ArrangementAlbum album = new ArrangementAlbum();
+//                    album.setName(buildFile.get(j));
+//                    album.setSum(1);
+//                    List<String> photoList = new ArrayList<>();
+////                    Photo photo = LitePal.where("mLocalPath = ?", savePath).find(Photo.class).get(0);
+//                    photoList.add(savePath);
+//                    album.setmList(photoList);
+//                    album.save();
+//                } else {
+//                    ArrangementAlbum album = new ArrangementAlbum();
+//                    List<String> list1 = mList.get(0).getmList();
+//                    List<String> list2 = new ArrayList<>();
+//                    list2.add(savePath);
+//                    list2.addAll(list1);
+////                        list1.add(savePath);
+////                        album.setmList(list1);
+//                    album.setmList(list2);
+//                    album.setSum(mList.get(0).getSum() + 1);
+//                    album.updateAll("name = ?", buildFile.get(j));
+//                }
 //            }
-//        }).run();
+//            EventBus.getDefault().post(new RefreshData());
+//        }
+
+
+
 
     }
 
@@ -186,5 +228,8 @@ public class FileUtil {
         }
         EventBus.getDefault().post(new RefreshData());
     }
+
+
+
 
 }
