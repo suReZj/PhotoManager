@@ -12,9 +12,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.sure.photomanager.R;
 
+import org.litepal.LitePal;
+
 import java.util.List;
 
 import bean.ArrangementAlbum;
+import bean.SortPhoto;
 
 public class ArrangementAdapter extends RecyclerView.Adapter<ArrangementAdapter.ViewHolder> {
     private List<ArrangementAlbum> mList;
@@ -51,7 +54,9 @@ public class ArrangementAdapter extends RecyclerView.Adapter<ArrangementAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Glide.with(mContext).load(mList.get(position).getmList().get(0)).into(holder.mImage);
+        SortPhoto sortPhoto = LitePal.where("mLocalPath = ?", mList.get(position).getmList().get(0)).find(SortPhoto.class).get(0);
+//        Glide.with(mContext).load(mList.get(position).getmList().get(0)).into(holder.mImage);
+        Glide.with(mContext).load(sortPhoto.getmByte()).into(holder.mImage);
         holder.mNameTv.setText(mList.get(position).getName());
         holder.mSumTv.setText(String.valueOf(mList.get(position).getSum()));
         if (mOnItemClickLitener != null) {
