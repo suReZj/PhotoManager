@@ -110,6 +110,7 @@ public class ShowActivity extends AppCompatActivity {
     private int mIndex;
     private String mOperationPath = null;
     private LocationManager locationManager;
+    private TextView mSumTv;
 
     Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -140,14 +141,47 @@ public class ShowActivity extends AppCompatActivity {
     }
 
     public void initView() {
-        mPhotoList = LitePal.where("mLocalPath like ?", "%" + mSystemPath + "%").order("mDate desc").find(Photo.class);
-        mList = LitePal.findAll(ArrangementAlbum.class);
-        for (int i = 0; i < mList.size(); i++) {
-            if (mList.get(i).getName().equals("delete")) {
-                mList.remove(i);
+        if (getIntent().getStringExtra("name") != null) {
+            mList = LitePal.findAll(ArrangementAlbum.class);
+            for (int i = 0; i < mList.size(); i++) {
+                if (mList.get(i).getName().equals("delete")) {
+                    mList.remove(i);
+                }
+
             }
+            for (int i = 0; i < mList.size(); i++) {
+                if (mList.get(i).getName().equals(getIntent().getStringExtra("name"))) {
+                    mList.remove(i);
+                }
+            }
+
+            mPhotoList = new ArrayList<>();
+            List<String> albumPath = LitePal.where("name = ?", getIntent().getStringExtra("name")).find(ArrangementAlbum.class).get(0).getmList();
+            for (int i = 0; i < albumPath.size(); i++) {
+                Photo photo = LitePal.where("mLocalPath = ?", albumPath.get(i)).find(Photo.class).get(0);
+                mPhotoList.add(photo);
+            }
+
+            mList.add(new ArrangementAlbum("Add Album", 0, null));
+
+
+        } else {
+            List<Photo> photos = LitePal.where("mLocalPath like ?", "%" + mSystemPath + "%").order("mDate desc").find(Photo.class);
+            mPhotoList = new ArrayList<>();
+            for (int i = 0; i < photos.size(); i++) {
+                if (!photos.get(i).ismIsSort()) {
+                    mPhotoList.add(photos.get(i));
+                }
+            }
+//        mPhotoList = LitePal.where("mLocalPath like ?", "%" + mSystemPath + "%").order("mDate desc").find(Photo.class);
+            mList = LitePal.findAll(ArrangementAlbum.class);
+            for (int i = 0; i < mList.size(); i++) {
+                if (mList.get(i).getName().equals("delete")) {
+                    mList.remove(i);
+                }
+            }
+            mList.add(new ArrangementAlbum("Add Album", 0, null));
         }
-        mList.add(new ArrangementAlbum("Add Album", 0, null));
 
 
         mViewPager = findViewById(R.id.show_activity_viewPager);
@@ -158,6 +192,9 @@ public class ShowActivity extends AppCompatActivity {
         mBackImage = findViewById(R.id.show_activity_back_image);
         mPlaceTv = findViewById(R.id.show_activity_place_tv);
         mTimeTv = findViewById(R.id.show_activity_time_tv);
+        mSumTv = findViewById(R.id.show_activity_sum);
+        setSum();
+
 
         for (int i = 0; i < mPhotoList.size(); i++) {
             if (mPhotoList.get(i).getmLocalPath().equals(mPath)) {
@@ -191,12 +228,26 @@ public class ShowActivity extends AppCompatActivity {
 
     }
 
+
+    public void setSum() {
+        List<ArrangementAlbum> albums = LitePal.where("name = ?", "delete").find(ArrangementAlbum.class);
+        if(albums.size()==0){
+            mSumTv.setVisibility(View.GONE);
+        }else {
+            mSumTv.setVisibility(View.VISIBLE);
+            mSumTv.setText(albums.get(0).getSum()+"");
+        }
+    }
+
+
     public void setListener() {
         mAlbumAdapter.setOnItemClickLitener(new ShowAlbumAdapter.OnItemClickLitener() {
             @Override
             public void onItemClick(ShowAlbumAdapter.ViewHolder view, final int index) {
                 mOperationPath = mPhotoList.get(mViewPager.getCurrentItem()).getmLocalPath();
-                changeViewPager();
+                if (getIntent().getStringExtra("name") == null) {
+                    changeViewPager();
+                }
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -204,11 +255,12 @@ public class ShowActivity extends AppCompatActivity {
                         list.add(mAlbumAdapter.getAlbum(index));
                         List<String> mPathList = new ArrayList<>();
                         mPathList.add(mOperationPath);
-                        try {
-                            FileUtil.catchStreamToFile(mPathList, list, ShowActivity.this);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            FileUtil.catchStreamToFile(mPathList, list, ShowActivity.this);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+                        FileUtil.sortPhoto(mPathList, list, ShowActivity.this);
 
                     }
                 }).run();
@@ -243,11 +295,12 @@ public class ShowActivity extends AppCompatActivity {
                                         list.add(String.valueOf(dialog.getInputEditText().getText()));
                                         List<String> mPathList = new ArrayList<>();
                                         mPathList.add(mOperationPath);
-                                        try {
-                                            FileUtil.catchStreamToFile(mPathList, list, ShowActivity.this);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
+//                                        try {
+//                                            FileUtil.catchStreamToFile(mPathList, list, ShowActivity.this);
+//                                        } catch (IOException e) {
+//                                            e.printStackTrace();
+//                                        }
+                                        FileUtil.sortPhoto(mPathList, list, ShowActivity.this);
 
                                     }
                                 }).run();
@@ -318,9 +371,14 @@ public class ShowActivity extends AppCompatActivity {
                 } else {
                     mOperationPath = mPhotoList.get(mViewPager.getCurrentItem()).getmLocalPath();
                     changeViewPager();
-                    List<String> mPath = new ArrayList<>();
+                    final List<String> mPath = new ArrayList<>();
                     mPath.add(mOperationPath);
-                    lockPhoto(mPath);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            lockPhoto(mPath);
+                        }
+                    }).run();
                 }
 
             }
@@ -384,16 +442,25 @@ public class ShowActivity extends AppCompatActivity {
         list.add("delete");
         final List<String> mPathList = new ArrayList<>();
         mPathList.add(mOperationPath);
-        try {
-            FileUtil.catchStreamToFile(mPathList, list, ShowActivity.this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                FileUtil.deletePhoto(mPathList, list, ShowActivity.this);
+            }
+        }).run();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(RefreshData event) {
-        mAlbumAdapter.refreshData();
+        if (event.getmMode().equals("lock")) {
+            Toast.makeText(ShowActivity.this, "successfully lock", Toast.LENGTH_SHORT).show();
+        }if(event.getmMode().equals("delete")){
+            setSum();
+        }
+        if (getIntent().getStringExtra("name") == null) {
+            mAlbumAdapter.refreshData();
+        }
     }
 
     @Override
@@ -439,12 +506,12 @@ public class ShowActivity extends AppCompatActivity {
         }
 
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                FileUtil.privateImage(photo, ShowActivity.this);
-            }
-        }).run();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+        FileUtil.privateImage(photo, ShowActivity.this);
+//            }
+//        }).run();
     }
 
     public byte[] Bitmap2Bytes(Bitmap bm) {

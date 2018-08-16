@@ -46,6 +46,12 @@ public class HomeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mTitleList.add(getString(R.string.myAlbum));
         mTitleList.add(getString(R.string.arrangement));
         mAlbumFragment = new AlbumFragment();
@@ -53,11 +59,6 @@ public class HomeFragment extends Fragment {
         mList.add(mAlbumFragment);
         mList.add(mArrangementFragment);
         mFragmentAdapter = new FragmentAdapter(getActivity().getSupportFragmentManager(), mList, mTitleList);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, null);
         mTablayout = view.findViewById(R.id.home_fragment_tl);
         mViewPager = view.findViewById(R.id.home_fragment_vp);

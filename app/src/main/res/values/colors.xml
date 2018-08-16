@@ -11,4 +11,5 @@
     <color name="maskColor">#80000000</color>
     <color name="noMask">#00FFFFFF</color>
     <color name="colorGray">#ccc</color>
+    <color name="btn">#FF6100</color>
 </resources>

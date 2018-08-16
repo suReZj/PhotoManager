@@ -22,6 +22,7 @@ import java.util.List;
 
 import adapter.AlbumAdapter;
 import bean.Photo;
+import bean.SortPhoto;
 import event.RefreshData;
 
 public class AlbumFragment extends Fragment {
@@ -50,7 +51,13 @@ public class AlbumFragment extends Fragment {
     }
 
     public void getData() {
-        mList = LitePal.where("mLocalPath like ?", "%" + mSystemPath + "%").order("mDate desc").find(Photo.class);
+        List<Photo> newList = LitePal.where("mLocalPath like ?", "%" + mSystemPath + "%").order("mDate desc").find(Photo.class);
+        mList.clear();
+        for (int i = 0; i < newList.size(); i++) {
+            if (!newList.get(i).ismIsSort()) {
+                mList.add(newList.get(i));
+            }
+        }
         mAdapter = new AlbumAdapter(mList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -74,6 +81,13 @@ public class AlbumFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(RefreshData event) {
+        if(event.getmMode().equals("delete")){
+            Toast.makeText(getContext(), "successfully deleted", Toast.LENGTH_SHORT).show();
+        }else if(event.getmMode().equals("lock")){
+            Toast.makeText(getContext(), "successfully lock", Toast.LENGTH_SHORT).show();
+        }else if(event.getmMode().equals("sort")){
+            Toast.makeText(getContext(), "Successful classification", Toast.LENGTH_SHORT).show();
+        }
         refreshData();
     }
 
@@ -90,9 +104,15 @@ public class AlbumFragment extends Fragment {
     }
 
     public void refreshData() {
-        mList = LitePal.where("mLocalPath like ?", "%" + mSystemPath + "%").order("mDate desc").find(Photo.class);
+        List<Photo> newList = LitePal.where("mLocalPath like ?", "%" + mSystemPath + "%").order("mDate desc").find(Photo.class);
+        mList.clear();
+        for (int i = 0; i < newList.size(); i++) {
+            if (!newList.get(i).ismIsSort()) {
+                mList.add(newList.get(i));
+            }
+        }
         mAdapter.refreshData(mList);
-        Toast.makeText(getContext(),"successfully deleted",Toast.LENGTH_SHORT).show();
+//        mAdapter.refreshData(newList);
     }
 
     public boolean getIsSelected() {

@@ -68,6 +68,12 @@ public class CloudAlbumFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mTitleList.add(getString(R.string.myCloud));
         mTitleList.add(getString(R.string.myFile));
         mMyCloudFragment = new MyCloudFragment();
@@ -75,12 +81,6 @@ public class CloudAlbumFragment extends Fragment {
         mFragmentList.add(mMyCloudFragment);
         mFragmentList.add(mMyFileFragment);
         mAdapter = new FragmentAdapter(getActivity().getSupportFragmentManager(), mFragmentList, mTitleList);
-        EventBus.getDefault().register(this);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.cloud_fragment, null);
         mTablayout = view.findViewById(R.id.cloud_fragment_tl);
         mViewPager = view.findViewById(R.id.cloud_fragment_vp);

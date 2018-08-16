@@ -19,6 +19,7 @@ import com.nanchen.compresshelper.CompressHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.litepal.LitePal;
+import org.litepal.crud.LitePalSupport;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,6 +30,7 @@ import java.util.List;
 
 import bean.ArrangementAlbum;
 import bean.Photo;
+import bean.SortPhoto;
 import event.RefreshData;
 
 public class FileUtil {
@@ -60,7 +62,6 @@ public class FileUtil {
                 Photo newPhoto = new Photo();
                 newPhoto.setmLocalPath(savePath);
                 newPhoto.updateAll("mLocalPath = ?", path);
-
 
 
                 List<ArrangementAlbum> mList = LitePal.where("name = ?", buildFile.get(j)).find(ArrangementAlbum.class);
@@ -184,7 +185,86 @@ public class FileUtil {
             }
             deleteImage(list.get(y), tempUri, context);
         }
-        EventBus.getDefault().post(new RefreshData());
+        EventBus.getDefault().post(new RefreshData("lock"));
+    }
+
+
+    public static void deletePhoto(List<String> list, List<String> albumName, Context context) {
+        for (int i = 0; i < albumName.size(); i++) {
+            for (int j = 0; j < list.size(); j++) {
+
+                Photo photo = LitePal.where("mLocalPath = ?", list.get(j)).find(Photo.class).get(0);
+                photo.setmIsSort(true);
+                List<String> name = photo.getSortName();
+                if (name == null) {
+                    name = new ArrayList<>();
+                }
+                name.add(albumName.get(i));
+                photo.setSortName(name);
+                photo.updateAll("mLocalPath = ?", list.get(j));
+
+
+                List<ArrangementAlbum> mList = LitePal.where("name = ?", albumName.get(i)).find(ArrangementAlbum.class);
+                if (mList.size() == 0) {
+                    ArrangementAlbum album = new ArrangementAlbum();
+                    album.setName(albumName.get(i));
+                    album.setSum(1);
+                    List<String> photoList = new ArrayList<>();
+                    photoList.add(list.get(j));
+                    album.setmList(photoList);
+                    album.save();
+                } else {
+                    ArrangementAlbum album = new ArrangementAlbum();
+                    List<String> list3 = mList.get(0).getmList();
+                    List<String> list4 = new ArrayList<>();
+                    list4.add(list.get(j));
+                    list4.addAll(list3);
+                    album.setmList(list4);
+                    album.setSum(mList.get(0).getSum() + 1);
+                    album.updateAll("name = ?", albumName.get(i));
+                }
+            }
+        }
+        EventBus.getDefault().post(new RefreshData("delete"));
+    }
+
+    public static void sortPhoto(List<String> list, List<String> albumName, Context context) {
+        for (int i = 0; i < albumName.size(); i++) {
+            for (int j = 0; j < list.size(); j++) {
+
+                Photo photo = LitePal.where("mLocalPath = ?", list.get(j)).find(Photo.class).get(0);
+                photo.setmIsSort(true);
+                List<String> name = photo.getSortName();
+                if (name == null) {
+                    name = new ArrayList<>();
+                }
+                name.add(albumName.get(i));
+                photo.setSortName(name);
+                photo.updateAll("mLocalPath = ?", list.get(j));
+
+
+                List<ArrangementAlbum> mList = LitePal.where("name = ?", albumName.get(i)).find(ArrangementAlbum.class);
+                if (mList.size() == 0) {
+                    ArrangementAlbum album = new ArrangementAlbum();
+                    album.setName(albumName.get(i));
+                    album.setSum(1);
+                    List<String> photoList = new ArrayList<>();
+                    photoList.add(list.get(j));
+                    album.setmList(photoList);
+                    album.save();
+                } else {
+                    ArrangementAlbum album = new ArrangementAlbum();
+                    List<String> list3 = mList.get(0).getmList();
+                    List<String> list4 = new ArrayList<>();
+                    list4.add(list.get(j));
+                    list4.addAll(list3);
+                    album.setmList(list4);
+                    album.setSum(mList.get(0).getSum() + 1);
+                    album.updateAll("name = ?", albumName.get(i));
+                }
+            }
+        }
+        EventBus.getDefault().post(new RefreshData("sort"));
     }
 
 }

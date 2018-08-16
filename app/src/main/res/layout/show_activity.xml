@@ -51,7 +51,26 @@
             android:src="@mipmap/ic_delete"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp"
+            android:id="@+id/show_activity_back_delete"/>
+        <!--<Button-->
+            <!--android:layout_width="12dp"-->
+            <!--android:layout_height="12dp"-->
+            <!--android:background="@drawable/btn_circle"-->
+            <!--/>-->
+            <TextView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_centerInParent="true"
+                android:text="1"
+                android:textColor="@color/white"
+                android:background="@drawable/btn_circle"
+                android:gravity="center"
+                android:textSize="8sp"
+                android:layout_alignRight="@id/show_activity_back_delete"
+                android:layout_alignTop="@id/show_activity_back_delete"
+                android:id="@+id/show_activity_sum"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

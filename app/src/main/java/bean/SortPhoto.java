@@ -1,13 +1,8 @@
 package bean;
 
-import android.media.ExifInterface;
-
 import org.litepal.crud.LitePalSupport;
 
-import java.util.List;
-
-
-public class Photo extends LitePalSupport {
+public class SortPhoto extends LitePalSupport {
     private String mLocalPath;
     private long mSize;
     private String mDisplayName;
@@ -15,25 +10,21 @@ public class Photo extends LitePalSupport {
     private String mDate;
     private String mLongitude;//经度
     private String mLatitude;//纬度
+    private String mSortAlbumName;
 
-    private boolean mIsSort;
-    private List<String> sortName;
-
-    public Photo() {
+    public SortPhoto() {
     }
 
-    public Photo(String mLocalPath, long mSize, String mDisplayName, String mAlbumName, String mDate, String mLongitude, String mLatitude, boolean sort, List<String> Name) {
-        this.mLocalPath = mLocalPath;
-        this.mSize = mSize;
-        this.mDisplayName = mDisplayName;
-        this.mAlbumName = mAlbumName;
-        this.mDate = mDate;
-        this.mLongitude = mLongitude;
-        this.mLatitude = mLatitude;
-        this.mIsSort = sort;
-        this.sortName = Name;
+    public SortPhoto(Photo photo, String name) {
+        this.mLocalPath = photo.getmLocalPath();
+        this.mSize = photo.getmSize();
+        this.mDisplayName = photo.getmDisplayName();
+        this.mAlbumName = photo.getmAlbumName();
+        this.mDate = photo.getmDate();
+        this.mLongitude = photo.getmLongitude();
+        this.mLatitude = photo.getmLatitude();
+        this.mSortAlbumName = name;
     }
-
 
     public String getmLocalPath() {
         return mLocalPath;
@@ -91,19 +82,11 @@ public class Photo extends LitePalSupport {
         this.mLatitude = mLatitude;
     }
 
-    public boolean ismIsSort() {
-        return mIsSort;
+    public String getmSortAlbumName() {
+        return mSortAlbumName;
     }
 
-    public void setmIsSort(boolean mIsSort) {
-        this.mIsSort = mIsSort;
-    }
-
-    public List<String> getSortName() {
-        return sortName;
-    }
-
-    public void setSortName(List<String> sortName) {
-        this.sortName = sortName;
+    public void setmSortAlbumName(String mSortAlbumName) {
+        this.mSortAlbumName = mSortAlbumName;
     }
 }

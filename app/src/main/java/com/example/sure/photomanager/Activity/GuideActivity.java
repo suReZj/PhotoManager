@@ -114,7 +114,8 @@ public class GuideActivity extends AppCompatActivity {
                         new String[]{"image/jpeg", "image/png", "image/jpg"},
                         MediaStore.Images.Media.DATE_TAKEN + " desc");
 
-                int length = LitePal.findAll(Photo.class).size();
+                List<Photo> oldList = LitePal.findAll(Photo.class);
+                int length = oldList.size();
                 if (mCursor != null && (length != mCursor.getCount())) {
                     LitePal.deleteAll(Photo.class);
                     ExifInterface exifInterface = null;
@@ -125,7 +126,7 @@ public class GuideActivity extends AppCompatActivity {
                         // 获取图片的路径
                         String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
 //                        int size = mCursor.getInt(mCursor.getColumnIndex(MediaStore.Images.Media.SIZE)) / 1024;
-                        int size = (int) ( mCursor.getInt(mCursor.getColumnIndex(MediaStore.Images.Media.SIZE))/1024);
+                        int size = (int) (mCursor.getInt(mCursor.getColumnIndex(MediaStore.Images.Media.SIZE)) / 1024);
                         String displayName = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
                         // 获取该图片的父路径名
                         String dirPath = new File(path).getParentFile().getAbsolutePath();
@@ -160,7 +161,8 @@ public class GuideActivity extends AppCompatActivity {
 //                                date = date.substring(0, 10);
 //                                date = DateUtil.changeTime(date);
 //                            }
-                            Photo photo = new Photo(path, size, displayName, dirPath, date, longitude, latitude);
+                            List<String> StringList = new ArrayList<>();
+                            Photo photo = new Photo(path, size, displayName, dirPath, date, longitude, latitude, false, StringList);
                             photo.saveAsync().listen(new SaveCallback() {
                                 @Override
                                 public void onFinish(boolean success) {
@@ -186,6 +188,15 @@ public class GuideActivity extends AppCompatActivity {
                     }
                     mCursor.close();
 
+                }
+
+                for (int i = 0; i < oldList.size(); i++) {
+                    if (oldList.get(i).ismIsSort()) {
+                        Photo photo = new Photo();
+                        photo.setmIsSort(true);
+                        photo.setSortName(oldList.get(i).getSortName());
+                        photo.updateAll("mLocalPath = ?", oldList.get(i).getmLocalPath());
+                    }
                 }
                 //更新界面
                 runOnUiThread(new Runnable() {

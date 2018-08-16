@@ -45,7 +45,6 @@ public class ShowFragment extends Fragment{
         mImage.setTransformOutListener(new SmoothImageView.OnTransformOutListener() {
             @Override
             public void onTransformOut() {
-                Toast.makeText(getContext(),"delete",Toast.LENGTH_SHORT).show();
                 EventBus.getDefault().post(new DeleteAndShowNextEvent());
             }
         });

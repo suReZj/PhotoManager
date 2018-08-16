@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PhotoManager</string>
+    <string name="app_name">Go Album</string>
     <string name="album">相册</string>
     <string name="other">其他</string>
     <string name="collect">收藏</string>

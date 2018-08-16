@@ -1,0 +1,11 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <!--边框角度-->
+            <!--<corners android:radius="10dip"/>-->
+            <solid android:color="@color/btn"/>
+            <!--外边框颜色-->
+            <!--<solid android:color="@color/bg_lightgray"/>-->
+        </shape>
+    </item>
+</layer-list>

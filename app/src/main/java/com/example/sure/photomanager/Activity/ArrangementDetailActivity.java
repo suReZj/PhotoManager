@@ -43,7 +43,7 @@ public class ArrangementDetailActivity extends AppCompatActivity {
         mSumTv = findViewById(R.id.arrangement_detail_activity_sum);
         mRv = findViewById(R.id.arrangement_detail_activity_rv);
 
-        mAdapter = new ArrangementDetailAdapter(mList);
+        mAdapter = new ArrangementDetailAdapter(mList,mPath);
         RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         mRv.setAdapter(mAdapter);
         mRv.setLayoutManager(mLayoutManager);

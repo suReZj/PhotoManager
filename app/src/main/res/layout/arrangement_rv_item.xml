@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/arrangement_rv_item_image"
         android:layout_width="160dp"
-        android:layout_height="110dp"
+        android:layout_height="160dp"
         android:layout_centerHorizontal="true"
         android:src="@mipmap/pic_plants"
         android:scaleType="fitXY"/>

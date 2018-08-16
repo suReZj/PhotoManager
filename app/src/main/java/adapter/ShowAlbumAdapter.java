@@ -110,6 +110,7 @@ public class ShowAlbumAdapter extends RecyclerView.Adapter<ShowAlbumAdapter.View
     }
 
     public void refreshData() {
+
         mList = LitePal.findAll(ArrangementAlbum.class);
         for (int i = 0; i < mList.size(); i++) {
             if (mList.get(i).getName().equals("delete")) {

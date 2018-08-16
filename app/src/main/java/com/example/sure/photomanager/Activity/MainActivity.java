@@ -120,23 +120,28 @@ public class MainActivity extends AppCompatActivity {
     private List<String> mSelectedList;
     private static PageNavigationView mPageNavigationView1;
     private NavigationController mNavigationController2;
+    private int selectedSum = 0;
 
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
+            mSelectedList = mHomeFragment.getSelectPhotoList();
             switch (msg.what) {
                 case 0:
-                    if (msg.arg1 < mSelectedList.size() - 1) {
+                    if (msg.arg1 < selectedSum - 1) {
                         upLoadPhotoList(msg.arg1 + 1);
                     } else {
                         Toast.makeText(MainActivity.this, "Successful upload", Toast.LENGTH_SHORT).show();
+                        EventBus.getDefault().post(new UploadEvent());
+                        EventBus.getDefault().post(new LoginEvent());
+                        selectedSum = 0;
+                        mHomeFragment.cancelSelected();
                     }
-                    mHomeFragment.cancelSelected();
                     break;
                 case 1:
                     Toast.makeText(MainActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
-                    if (msg.arg1 < mSelectedList.size() - 1) {
-                        upLoadPhotoList(msg.arg1 + 1);
+                    if (msg.arg1 < selectedSum - 1) {
+//                        upLoadPhotoList(msg.arg1 + 1);
                     }
                     break;
             }
@@ -266,19 +271,25 @@ public class MainActivity extends AppCompatActivity {
 //                            for (int i = 0; i < list.size(); i++) {
 //                                upLoadPhoto(pathList.get(i));
 //                            }
-                            mSelectedList = mHomeFragment.getSelectPhotoList();
-                            upLoadPhotoList(0);
-                            mPersonalFragment.setProgress();
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mSelectedList = mHomeFragment.getSelectPhotoList();
+                                    selectedSum = mSelectedList.size();
+                                    upLoadPhotoList(0);
+                                    mPersonalFragment.setProgress();
+                                }
+                            }).run();
+
                         }
                         break;
                     case 1:
-                        lockPhoto(mHomeFragment.getSelectPhotoList());
-//                        mLodingDiaolg = new MaterialDialog.Builder(MainActivity.this)
-//                                .title(R.string.encrypting)
-//                                .content(R.string.please_wait)
-//                                .progress(true, 0)
-//                                .progressIndeterminateStyle(true)
-//                                .show();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                lockPhoto(mHomeFragment.getSelectPhotoList());
+                            }
+                        }).run();
                         break;
                     case 2:
                         showArrangementDialog();
@@ -290,13 +301,9 @@ public class MainActivity extends AppCompatActivity {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    List<String> list = new ArrayList<>();
-                                    list.add("delete");
-                                    FileUtil.catchStreamToFile(mHomeFragment.getSelectPhotoList(), list, MainActivity.this);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                List<String> list = new ArrayList<>();
+                                list.add("delete");
+                                FileUtil.deletePhoto(mHomeFragment.getSelectPhotoList(), list, MainActivity.this);
                             }
                         }).run();
                         break;
@@ -311,18 +318,30 @@ public class MainActivity extends AppCompatActivity {
                         if (list.size() == 0) {
                             Toast.makeText(MainActivity.this, "Please Login", Toast.LENGTH_SHORT).show();
                         } else {
-                            List<String> pathList = mHomeFragment.getSelectPhotoList();
+//                            List<String> pathList = mHomeFragment.getSelectPhotoList();
 //                            for (int i = 0; i < list.size(); i++) {
 //                                upLoadPhoto(pathList.get(i));
 //                            }
-                            mSelectedList = mHomeFragment.getSelectPhotoList();
-                            upLoadPhotoList(0);
-                            mPersonalFragment.setProgress();
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mSelectedList = mHomeFragment.getSelectPhotoList();
+                                    selectedSum = mSelectedList.size();
+                                    upLoadPhotoList(0);
+                                    mPersonalFragment.setProgress();
+                                }
+                            }).run();
+
                         }
 
                         break;
                     case 1:
-                        lockPhoto(mHomeFragment.getSelectPhotoList());
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                lockPhoto(mHomeFragment.getSelectPhotoList());
+                            }
+                        }).run();
                         break;
                     case 2:
                         showArrangementDialog();
@@ -334,13 +353,9 @@ public class MainActivity extends AppCompatActivity {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    List<String> list = new ArrayList<>();
-                                    list.add("delete");
-                                    FileUtil.catchStreamToFile(mHomeFragment.getSelectPhotoList(), list, MainActivity.this);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                List<String> list = new ArrayList<>();
+                                list.add("delete");
+                                FileUtil.deletePhoto(mHomeFragment.getSelectPhotoList(), list, MainActivity.this);
                             }
                         }).run();
                         break;
@@ -561,11 +576,14 @@ public class MainActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            FileUtil.catchStreamToFile(mHomeFragment.getSelectPhotoList(), list, MainActivity.this);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+//                        try {
+//                            FileUtil.catchStreamToFile(mHomeFragment.getSelectPhotoList(), list, MainActivity.this);
+                        if (list.size() != 0) {
+                            FileUtil.sortPhoto(mHomeFragment.getSelectPhotoList(), list, MainActivity.this);
                         }
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
                     }
                 }).run();
             }
@@ -596,13 +614,14 @@ public class MainActivity extends AppCompatActivity {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        try {
-                                            List<String> list = new ArrayList<>();
-                                            list.add(String.valueOf(dialog.getInputEditText().getText()));
-                                            FileUtil.catchStreamToFile(mHomeFragment.getSelectPhotoList(), list, MainActivity.this);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
+//                                        try {
+                                        List<String> list = new ArrayList<>();
+                                        list.add(String.valueOf(dialog.getInputEditText().getText()));
+//                                            FileUtil.catchStreamToFile(mHomeFragment.getSelectPhotoList(), list, MainActivity.this);
+                                        FileUtil.sortPhoto(mHomeFragment.getSelectPhotoList(), list, MainActivity.this);
+//                                        } catch (IOException e) {
+//                                            e.printStackTrace();
+//                                        }
                                     }
                                 }).run();
                             }
@@ -655,14 +674,7 @@ public class MainActivity extends AppCompatActivity {
                 privatePhoto.save();
                 photo1.delete();
             }
-
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FileUtil.privateImage(photo, MainActivity.this);
-                }
-            }).run();
+            FileUtil.privateImage(photo, MainActivity.this);
         }
     }
 
@@ -732,8 +744,6 @@ public class MainActivity extends AppCompatActivity {
                         msg.what = 0;
                         msg.arg1 = index;
                         handler.sendMessage(msg);
-                        EventBus.getDefault().post(new UploadEvent());
-                        EventBus.getDefault().post(new LoginEvent());
                     } else {
                         Message msg = handler.obtainMessage();
                         msg.what = 1;
@@ -745,4 +755,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+
+
 }
